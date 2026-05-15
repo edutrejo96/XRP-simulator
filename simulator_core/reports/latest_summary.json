@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-05-15T10:20:17.014314+00:00",
+  "direct_xrp_flow_annual_usd": 9108015650.0,
+  "rlusd_influenced_flow_annual_usd": 20756805190.0,
+  "xrpl_influenced_flow_annual_usd": 14535029640.0,
+  "base_depth_1pct_usd": 26961135.589364346,
+  "dynamic_depth_1pct_usd": 62700489.22106227,
+  "effective_rotation": 33.861610227999996,
+  "functional_price_usd": 0.5769315356739811,
+  "market_price_simulated_usd": 1.9500285905780566,
+  "slippage_100m_pct": 1.3608215763839862,
+  "categories": {
+    "Ripple Payments": 1898861850.0,
+    "Regional Stack": 911250000.0,
+    "RippleNet / Payments": 3661200.0,
+    "Prime Brokerage": 179928000.0,
+    "Treasury Management": 53234999.99999999,
+    "Stablecoin Payments": 94350000.0,
+    "Stablecoin": 345600000.0,
+    "Tokenized RWA": 2952000.0,
+    "Pilot / Trade Finance": 423150.0,
+    "Custody / Tokenization": 7874999.999999999,
+    "Custody": 22770000.0,
+    "Historical ODL / Payments": 12038400.000000002,
+    "CBDC / Stablecoin Pilot": 5850.0,
+    "ETF / ETP Institucional": 5418750000.0,
+    "Tokenización RWA": 108800000.00000001,
+    "Derivados / Colateral Institucional": 33000000.0,
+    "Liquidez pública / CEX": 14515200.0
+  },
+  "mode": "live_orderbook_snapshot"
+}

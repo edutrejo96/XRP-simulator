@@ -1,0 +1,1115 @@
+{
+  "version": "v10.7-ui-etf-orderbooks-markets",
+  "generated": "2026-05-15",
+  "method_note": "Infrastructure registry uses evidence-weighted assumptions. Values are editable and conservative by default. Base volumes are potential addressable or disclosed infrastructure volumes, not automatic XRP volume.",
+  "evidence_weights": {
+    "confirmed_product": 1.0,
+    "confirmed_customer_case": 0.9,
+    "confirmed_acquisition": 0.85,
+    "confirmed_expansion": 0.9,
+    "official_pilot": 0.65,
+    "historical_confirmed": 0.55,
+    "ecosystem_plausible": 0.4,
+    "user_custom": 0.5
+  },
+  "items": [
+    {
+      "id": "bitso_mxn_latam",
+      "name": "Bitso / México-LATAM payout",
+      "region": "LATAM",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "USD/MXN",
+        "USD/LATAM",
+        "US-LATAM remittances",
+        "LATAM payouts"
+      ],
+      "partners": [
+        "Bitso",
+        "Ripple Payments"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "RLUSD",
+        "XRP settlement asset",
+        "LATAM payout"
+      ],
+      "base_volume_annual_usd": 68000000000,
+      "base_volume_label": "México remittances proxy + LATAM payout potential; editable",
+      "default_activation_pct": 12,
+      "direct_xrp_touch_pct": 18,
+      "rlusd_touch_pct": 42,
+      "xrpl_touch_pct": 35,
+      "private_liquidity_pct": 70,
+      "retention_effect_pct": 18,
+      "confidence": 0.86,
+      "book_symbols": [
+        "XRP/MXN",
+        "XRP/USD",
+        "XRP/RLUSD"
+      ],
+      "summary": "Bitso is explicitly described by Ripple as using Ripple Payments with RLUSD and XRP as settlement assets. Treat as high-evidence corridor, but not all LATAM payout volume touches XRP.",
+      "summary_es": "Bitso usa explícitamente Ripple Payments con RLUSD y XRP como activos de liquidación. No todo el volumen de pagos en LATAM toca XRP directamente.",
+      "sources": [
+        "https://ripple.com/customer-case-study/bitso/",
+        "https://blogs.worldbank.org/en/peoplemove/in-2024--remittance-flows-to-low--and-middle-income-countries-ar"
+      ]
+    },
+    {
+      "id": "brazil_full_stack",
+      "name": "Brasil full stack / BRL-RLUSD-BBRL",
+      "region": "Brazil",
+      "category": "Regional Stack",
+      "evidence": "confirmed_expansion",
+      "status_label": "Confirmado expansión",
+      "corridors": [
+        "USD/BRL",
+        "EUR/BRL",
+        "BRL stablecoins",
+        "Brazil payouts"
+      ],
+      "partners": [
+        "Banco Genial",
+        "Braza Bank",
+        "Nomad",
+        "Azify",
+        "ATTRUS",
+        "Frente Corretora",
+        "Mercado Bitcoin",
+        "Foxbit",
+        "Ripio"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "RLUSD",
+        "BBRL on XRPL",
+        "Custody",
+        "Treasury",
+        "Prime"
+      ],
+      "base_volume_annual_usd": 125000000000,
+      "base_volume_label": "Brazil cross-border + FX + stablecoin infrastructure proxy; editable",
+      "default_activation_pct": 10,
+      "direct_xrp_touch_pct": 9,
+      "rlusd_touch_pct": 55,
+      "xrpl_touch_pct": 48,
+      "private_liquidity_pct": 78,
+      "retention_effect_pct": 20,
+      "confidence": 0.9,
+      "book_symbols": [
+        "XRP/BRL",
+        "XRP/USD",
+        "XRP/RLUSD"
+      ],
+      "summary": "Brazil is not just a pair: Ripple has Payments, RLUSD adoption, BBRL on XRPL, banks/FX institutions, custody and treasury adjacency.",
+      "summary_es": "Brasil no es solo un par de divisas: Ripple tiene Payments, RLUSD, BBRL en XRPL, bancos, custodia y treasury integradas.",
+      "sources": [
+        "https://ripple.com/ripple-press/ripple-deepens-commitment-to-brazil-with-expanded-payments-offering-growing-customer-momentum-and-vasp-license-application/"
+      ]
+    },
+    {
+      "id": "tranglo_apac_network",
+      "name": "Tranglo APAC / 70+ countries",
+      "region": "APAC / Europe / Middle East",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "MYR",
+        "SGD",
+        "PHP",
+        "VND",
+        "KRW",
+        "LKR",
+        "TRY",
+        "SEPA",
+        "APAC payouts"
+      ],
+      "partners": [
+        "Tranglo",
+        "Ripple Payments"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "ODL historical",
+        "Payout network",
+        "B2B",
+        "Remittances"
+      ],
+      "base_volume_annual_usd": 65000000000,
+      "base_volume_label": "APAC payout/remittance proxy; actual internal flow undisclosed",
+      "default_activation_pct": 8,
+      "direct_xrp_touch_pct": 7,
+      "rlusd_touch_pct": 24,
+      "xrpl_touch_pct": 22,
+      "private_liquidity_pct": 75,
+      "retention_effect_pct": 12,
+      "confidence": 0.78,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/PHP",
+        "XRP/EUR"
+      ],
+      "summary": "Tranglo supports 70+ countries and 5,500 payout partners; strong network effect but XRP touch must remain configurable because flows can be private/stablecoin/fiat.",
+      "summary_es": "Tranglo opera en 70+ países y 5.500 socios de pago. Fuerte efecto de red, pero el toque en XRP debe ser configurable porque los flujos pueden ser privados, stablecoin o fiat.",
+      "sources": [
+        "https://ripple.com/customer-case-study/tranglo/",
+        "https://www.tranglo.com/press/tranglo-enables-ripples-on-demand-liquidity-service-across-its-25-payment-corridors/"
+      ]
+    },
+    {
+      "id": "sbi_remit_jpy_thb",
+      "name": "SBI Remit / Japan-Thailand",
+      "region": "Japan / Thailand",
+      "category": "RippleNet / Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado histórico-operativo",
+      "corridors": [
+        "JPY/THB"
+      ],
+      "partners": [
+        "SBI Remit",
+        "Siam Commercial Bank",
+        "RippleNet"
+      ],
+      "stack": [
+        "RippleNet",
+        "Remittances",
+        "Bank payout"
+      ],
+      "base_volume_annual_usd": 900000000,
+      "base_volume_label": "Conservative corridor proxy; official case references JPY remittance rail",
+      "default_activation_pct": 15,
+      "direct_xrp_touch_pct": 3,
+      "rlusd_touch_pct": 4,
+      "xrpl_touch_pct": 8,
+      "private_liquidity_pct": 50,
+      "retention_effect_pct": 6,
+      "confidence": 0.72,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/JPY"
+      ],
+      "summary": "Confirmed RippleNet remittance corridor. XRP direct touch not assumed unless user increases it.",
+      "summary_es": "Corredor de remesas RippleNet confirmado. El contacto directo con XRP no se asume por defecto salvo que el usuario lo ajuste.",
+      "sources": [
+        "https://ripple.com/customer-case-study/sbi-remit/",
+        "https://ripple.com/insights/the-power-of-instant-remittances-ripplenet-in-japan/"
+      ]
+    },
+    {
+      "id": "unicambio_eur_brl",
+      "name": "Unicâmbio / Portugal-Europe ↔ Brasil",
+      "region": "Europe / Brazil",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "EUR/BRL",
+        "Portugal/Brazil",
+        "Europe/LatAm B2B"
+      ],
+      "partners": [
+        "Unicâmbio",
+        "Ripple Payments"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "Digital assets",
+        "Brazil network"
+      ],
+      "base_volume_annual_usd": 3500000000,
+      "base_volume_label": "Europe-Brazil business payments proxy; editable",
+      "default_activation_pct": 18,
+      "direct_xrp_touch_pct": 8,
+      "rlusd_touch_pct": 22,
+      "xrpl_touch_pct": 18,
+      "private_liquidity_pct": 65,
+      "retention_effect_pct": 10,
+      "confidence": 0.82,
+      "book_symbols": [
+        "XRP/EUR",
+        "XRP/BRL"
+      ],
+      "summary": "Ripple announced instant payments between Portugal and Brazil through Unicâmbio, linking Europe with the Brazil stack.",
+      "summary_es": "Ripple anunció pagos instantáneos entre Portugal y Brasil a través de Unicâmbio, conectando Europa con el stack de Brasil.",
+      "sources": [
+        "https://ripple.com/customer-case-study/unicambio/",
+        "https://ripple.com/ripple-press/ripple-brings-crypto-enabled-cross-border-payments-to-portugal-in-partnership-with-unicambio/"
+      ]
+    },
+    {
+      "id": "ripple_prime_hidden_road",
+      "name": "Ripple Prime / Hidden Road",
+      "region": "Global institutional",
+      "category": "Prime Brokerage",
+      "evidence": "confirmed_acquisition",
+      "status_label": "Adquisición cerrada",
+      "corridors": [
+        "FX prime",
+        "digital assets",
+        "cross-margin",
+        "institutional collateral"
+      ],
+      "partners": [
+        "Ripple Prime",
+        "Hidden Road",
+        "Institutional clients"
+      ],
+      "stack": [
+        "Prime brokerage",
+        "RLUSD collateral",
+        "Clearing",
+        "Institutional liquidity"
+      ],
+      "base_volume_annual_usd": 3000000000000,
+      "base_volume_label": "Disclosed Hidden Road clearing volume; not automatic XRP volume",
+      "default_activation_pct": 1.2,
+      "direct_xrp_touch_pct": 0.7,
+      "rlusd_touch_pct": 5.5,
+      "xrpl_touch_pct": 1.8,
+      "private_liquidity_pct": 92,
+      "retention_effect_pct": 36,
+      "confidence": 0.84,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/RLUSD"
+      ],
+      "summary": "Huge institutional surface area. Treat as low direct XRP touch but high impact on private depth, RLUSD collateral and lower rotation if XRP becomes inventory/collateral.",
+      "summary_es": "Gran superficie institucional. Bajo contacto directo con XRP pero alto impacto en profundidad privada, colateral RLUSD y menor rotación si XRP se convierte en inventario o colateral.",
+      "sources": [
+        "https://www.reuters.com/markets/deals/crypto-firm-ripple-buy-prime-broker-hidden-road-125-billion-2025-04-08/",
+        "https://ripple.com/insights/ripple-closes-hidden-road-acquisition/"
+      ]
+    },
+    {
+      "id": "ripple_treasury_gtreasury",
+      "name": "Ripple Treasury / GTreasury",
+      "region": "Global corporates",
+      "category": "Treasury Management",
+      "evidence": "confirmed_product",
+      "status_label": "Producto confirmado",
+      "corridors": [
+        "Corporate treasury",
+        "cash management",
+        "FX",
+        "B2B payments",
+        "digital asset accounts"
+      ],
+      "partners": [
+        "Ripple Treasury",
+        "GTreasury",
+        "Enterprise clients"
+      ],
+      "stack": [
+        "Treasury management",
+        "Digital Asset Accounts",
+        "Unified Treasury",
+        "Payments"
+      ],
+      "base_volume_annual_usd": 13000000000000,
+      "base_volume_label": "Ripple Treasury disclosed payments volume; only tiny configurable fraction can touch digital assets/XRP",
+      "default_activation_pct": 0.35,
+      "direct_xrp_touch_pct": 0.15,
+      "rlusd_touch_pct": 2.2,
+      "xrpl_touch_pct": 0.55,
+      "private_liquidity_pct": 88,
+      "retention_effect_pct": 22,
+      "confidence": 0.78,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/RLUSD",
+        "XRP/EUR"
+      ],
+      "summary": "Very large treasury surface area. Model conservatively: tiny activation can matter, but $13T is not XRP volume.",
+      "summary_es": "Superficie de treasury muy grande. Modelo conservador: $13T no es volumen XRP, pero una pequeña activación puede importar.",
+      "sources": [
+        "https://ripple.com/ripple-press/ripple-treasury-launches-the-first-treasury-management-system-tms-with-native-digital-asset-capabilities/",
+        "https://treasury.ripple.com/solutions/digital-assets/digital-assets"
+      ]
+    },
+    {
+      "id": "rail_stablecoin_payments",
+      "name": "Rail stablecoin payments",
+      "region": "Global stablecoin payments",
+      "category": "Stablecoin Payments",
+      "evidence": "confirmed_acquisition",
+      "status_label": "Adquisición anunciada/cerrada según fuentes",
+      "corridors": [
+        "Stablecoin B2B",
+        "virtual accounts",
+        "cross-border stablecoin payments"
+      ],
+      "partners": [
+        "Rail",
+        "Ripple Payments",
+        "RLUSD"
+      ],
+      "stack": [
+        "Stablecoin payments",
+        "Virtual accounts",
+        "Back-office automation",
+        "RLUSD"
+      ],
+      "base_volume_annual_usd": 250000000000,
+      "base_volume_label": "Proxy for stablecoin payment activity; editable because global stablecoin payment base changes fast",
+      "default_activation_pct": 4,
+      "direct_xrp_touch_pct": 1.5,
+      "rlusd_touch_pct": 28,
+      "xrpl_touch_pct": 6,
+      "private_liquidity_pct": 83,
+      "retention_effect_pct": 14,
+      "confidence": 0.74,
+      "book_symbols": [
+        "XRP/RLUSD",
+        "XRP/USD"
+      ],
+      "summary": "Rail is mainly RLUSD/stablecoin infrastructure. XRP impact is indirect unless routing uses XRP liquidity paths.",
+      "summary_es": "Rail es principalmente infraestructura RLUSD/stablecoin. El impacto en XRP es indirecto salvo que el enrutamiento use rutas de liquidez XRP.",
+      "sources": [
+        "https://www.reuters.com/legal/transactional/ripple-buy-stablecoin-platform-rail-200-million-2025-08-07/",
+        "https://ripple.com/ripple-press/ripple-to-acquire-rail-for-200m-expanding-leadership-in-stablecoin-payments/"
+      ]
+    },
+    {
+      "id": "rlusd_core",
+      "name": "RLUSD core settlement layer",
+      "region": "XRPL / Ethereum / Global",
+      "category": "Stablecoin",
+      "evidence": "confirmed_product",
+      "status_label": "Producto confirmado",
+      "corridors": [
+        "RLUSD/XRPL",
+        "RLUSD/ETH",
+        "stablecoin settlement",
+        "on/off ramp"
+      ],
+      "partners": [
+        "Ripple",
+        "RLUSD venues",
+        "XRPL ecosystem"
+      ],
+      "stack": [
+        "RLUSD",
+        "XRPL",
+        "Ethereum",
+        "Payments",
+        "Collateral"
+      ],
+      "base_volume_annual_usd": 36000000000,
+      "base_volume_label": "Default internal annualized settlement proxy; replace with live RLUSD volume if available",
+      "default_activation_pct": 20,
+      "direct_xrp_touch_pct": 6,
+      "rlusd_touch_pct": 100,
+      "xrpl_touch_pct": 55,
+      "private_liquidity_pct": 58,
+      "retention_effect_pct": 12,
+      "confidence": 0.8,
+      "book_symbols": [
+        "XRP/RLUSD",
+        "XRP/USD"
+      ],
+      "summary": "RLUSD can increase XRPL activity and XRP/RLUSD liquidity, but not all RLUSD flow requires XRP.",
+      "summary_es": "RLUSD puede aumentar la actividad en XRPL y la liquidez XRP/RLUSD, pero no todo el flujo RLUSD requiere XRP.",
+      "sources": [
+        "https://ripple.com/solutions/stablecoin/",
+        "https://ripple.com/ripple-press/raising-the-standard-for-stablecoins-ripple-usd-launches-globally/"
+      ]
+    },
+    {
+      "id": "dbs_franklin_sgbenji",
+      "name": "DBS / Franklin Templeton sgBENJI + RLUSD",
+      "region": "Singapore / Institutional RWA",
+      "category": "Tokenized RWA",
+      "evidence": "confirmed_product",
+      "status_label": "Confirmado institucional",
+      "corridors": [
+        "RLUSD/sgBENJI",
+        "tokenized money market fund",
+        "collateral lending"
+      ],
+      "partners": [
+        "DBS",
+        "Franklin Templeton",
+        "Ripple"
+      ],
+      "stack": [
+        "RLUSD",
+        "XRP Ledger",
+        "Tokenized MMF",
+        "Collateral"
+      ],
+      "base_volume_annual_usd": 5000000000,
+      "base_volume_label": "Conservative tokenized MMF flow proxy; editable",
+      "default_activation_pct": 6,
+      "direct_xrp_touch_pct": 1.2,
+      "rlusd_touch_pct": 60,
+      "xrpl_touch_pct": 70,
+      "private_liquidity_pct": 72,
+      "retention_effect_pct": 18,
+      "confidence": 0.82,
+      "book_symbols": [
+        "XRP/RLUSD",
+        "XRP/USD"
+      ],
+      "summary": "Strong XRPL/RLUSD signal; XRP direct impact depends on liquidity routing and collateral use.",
+      "summary_es": "Señal fuerte de XRPL/RLUSD. El impacto directo en XRP depende del enrutamiento de liquidez y el uso de colateral.",
+      "sources": [
+        "https://ripple.com/ripple-press/dbs-franklin-templeton-to-launch-trading-and-lending-solutions-tokenised-mmf-ripple-stablecoin-rlusd/",
+        "https://www.reuters.com/business/finance/dbs-franklin-templeton-ripple-team-up-tokenised-money-market-fund-trading-2025-09-18/"
+      ]
+    },
+    {
+      "id": "mas_bloom_unloq",
+      "name": "MAS BLOOM / Unloq trade finance",
+      "region": "Singapore / APAC trade finance",
+      "category": "Pilot / Trade Finance",
+      "evidence": "official_pilot",
+      "status_label": "Piloto oficial",
+      "corridors": [
+        "trade finance",
+        "programmable settlement",
+        "tokenized bank liabilities",
+        "RLUSD"
+      ],
+      "partners": [
+        "MAS BLOOM",
+        "Unloq",
+        "Ripple"
+      ],
+      "stack": [
+        "XRPL",
+        "RLUSD",
+        "Trade finance",
+        "Programmable settlement"
+      ],
+      "base_volume_annual_usd": 10000000000,
+      "base_volume_label": "Trade finance pilot addressable proxy; not production volume",
+      "default_activation_pct": 1.5,
+      "direct_xrp_touch_pct": 0.7,
+      "rlusd_touch_pct": 25,
+      "xrpl_touch_pct": 40,
+      "private_liquidity_pct": 65,
+      "retention_effect_pct": 8,
+      "confidence": 0.62,
+      "book_symbols": [
+        "XRP/RLUSD",
+        "XRP/USD"
+      ],
+      "summary": "Official pilot: useful for narrative and future option value, but low current production weight.",
+      "summary_es": "Piloto oficial útil para narrativa y valor de opción futuro, pero con bajo peso en producción actual.",
+      "sources": [
+        "https://ripple.com/ripple-press/ripple-joins-monetary-authority-of-singapore-s-bloom-initiative-and-partners-with-unloq-to-advance-programmable-settlement-infrastructure-in-trade-finance/"
+      ]
+    },
+    {
+      "id": "korea_institutional_stack",
+      "name": "Korea institutional stack / custody + bonds",
+      "region": "South Korea",
+      "category": "Custody / Tokenization",
+      "evidence": "confirmed_product",
+      "status_label": "Confirmado institucional",
+      "corridors": [
+        "KRW stablecoin",
+        "tokenized government bonds",
+        "custody",
+        "remittance stablecoins"
+      ],
+      "partners": [
+        "Kbank",
+        "Kyobo Life",
+        "BDACS",
+        "Ripple Custody"
+      ],
+      "stack": [
+        "Ripple Custody",
+        "Tokenized bonds",
+        "XRPL-native assets",
+        "Stablecoin rails"
+      ],
+      "base_volume_annual_usd": 25000000000,
+      "base_volume_label": "Institutional Korea tokenization/custody proxy; editable",
+      "default_activation_pct": 2.5,
+      "direct_xrp_touch_pct": 1.8,
+      "rlusd_touch_pct": 10,
+      "xrpl_touch_pct": 22,
+      "private_liquidity_pct": 80,
+      "retention_effect_pct": 18,
+      "confidence": 0.7,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/KRW"
+      ],
+      "summary": "Korea is mostly custody/tokenization/stablecoin infrastructure today, with possible future XRP/RLUSD liquidity impact.",
+      "summary_es": "Corea es principalmente custodia, tokenización y stablecoin hoy, con posible impacto futuro en liquidez XRP/RLUSD.",
+      "sources": [
+        "https://ripple.com/customer-case-study/bdacs/",
+        "https://ripple.com/ripple-press/ripple-partners-with-kbank-to-deploy-scalable-digital-asset-wallet-infrastructure-through-ripple-custody/",
+        "https://ripple.com/ripple-press/ripple-and-kyobo-life-insurance-partner-to-pioneer-korea-s-first-tokenised-government-bond-settlement-on-blockchain/"
+      ]
+    },
+    {
+      "id": "custody_global",
+      "name": "Ripple Custody global institutional layer",
+      "region": "Global",
+      "category": "Custody",
+      "evidence": "confirmed_product",
+      "status_label": "Producto confirmado",
+      "corridors": [
+        "banks",
+        "asset managers",
+        "fintechs",
+        "token lifecycle",
+        "digital asset custody"
+      ],
+      "partners": [
+        "Ripple Custody",
+        "DZ BANK",
+        "BDACS",
+        "Institutional clients"
+      ],
+      "stack": [
+        "Custody",
+        "Tokenization",
+        "Wallet infrastructure",
+        "XRPL assets"
+      ],
+      "base_volume_annual_usd": 100000000000,
+      "base_volume_label": "Institutional custody addressable proxy; not Ripple AUC disclosure",
+      "default_activation_pct": 3,
+      "direct_xrp_touch_pct": 1.1,
+      "rlusd_touch_pct": 7,
+      "xrpl_touch_pct": 12,
+      "private_liquidity_pct": 70,
+      "retention_effect_pct": 16,
+      "confidence": 0.69,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/EUR"
+      ],
+      "summary": "Custody usually affects trust and retained inventory before it affects spot XRP demand directly.",
+      "summary_es": "La custodia suele afectar a la confianza y el inventario retenido antes de afectar directamente a la demanda spot de XRP.",
+      "sources": [
+        "https://ripple.com/solutions/digital-asset-custody/",
+        "https://ripple.com/customer-case-study/dz-bank/",
+        "https://ripple.com/customer-case-study/bdacs/"
+      ]
+    },
+    {
+      "id": "modulr_uk_eu",
+      "name": "Modulr / UK-Europe payments",
+      "region": "UK / Europe",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "GBP/EUR",
+        "UK/EU",
+        "merchant payments"
+      ],
+      "partners": [
+        "Modulr",
+        "RippleNet"
+      ],
+      "stack": [
+        "Payments",
+        "UK/EU rails",
+        "Bank of England settlement access"
+      ],
+      "base_volume_annual_usd": 12000000000,
+      "base_volume_label": "UK/EU merchant/international payments proxy",
+      "default_activation_pct": 4,
+      "direct_xrp_touch_pct": 2,
+      "rlusd_touch_pct": 10,
+      "xrpl_touch_pct": 6,
+      "private_liquidity_pct": 62,
+      "retention_effect_pct": 6,
+      "confidence": 0.68,
+      "book_symbols": [
+        "XRP/EUR",
+        "XRP/USD"
+      ],
+      "summary": "Confirmed RippleNet/Payments customer, but direct XRP usage is not assumed by default.",
+      "summary_es": "Cliente confirmado de RippleNet/Payments, pero el uso directo de XRP no se asume por defecto.",
+      "sources": [
+        "https://ripple.com/customer-case-study/modulr/"
+      ]
+    },
+    {
+      "id": "moneymatch_myr_sme",
+      "name": "MoneyMatch / Malaysia SME payments",
+      "region": "Malaysia / Global SME",
+      "category": "RippleNet / Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "MYR/global",
+        "SME supplier payments",
+        "120+ countries"
+      ],
+      "partners": [
+        "MoneyMatch",
+        "RippleNet"
+      ],
+      "stack": [
+        "RippleNet",
+        "SME payments",
+        "same-day settlement"
+      ],
+      "base_volume_annual_usd": 600000000,
+      "base_volume_label": "MoneyMatch case includes MYR 1.3B+ transferred; proxy editable",
+      "default_activation_pct": 12,
+      "direct_xrp_touch_pct": 2.5,
+      "rlusd_touch_pct": 7,
+      "xrpl_touch_pct": 7,
+      "private_liquidity_pct": 54,
+      "retention_effect_pct": 5,
+      "confidence": 0.64,
+      "book_symbols": [
+        "XRP/USD"
+      ],
+      "summary": "Strong proof of payment network usage, but direct XRP touch uncertain.",
+      "summary_es": "Prueba sólida de uso de la red de pagos, pero el contacto directo con XRP es incierto.",
+      "sources": [
+        "https://ripple.com/customer-case-study/moneymatch/"
+      ]
+    },
+    {
+      "id": "flash_haiha_aus_global",
+      "name": "Australia remittance stack / Flash + Hai Ha",
+      "region": "Australia / Global remittances",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "AUD/global",
+        "Australia remittances",
+        "Vietnam/APAC"
+      ],
+      "partners": [
+        "Flash Payments",
+        "Hai Ha Money Transfer",
+        "Ripple Payments"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "Remittances",
+        "Complex corridors"
+      ],
+      "base_volume_annual_usd": 2500000000,
+      "base_volume_label": "Australia remittance/payout proxy; editable",
+      "default_activation_pct": 10,
+      "direct_xrp_touch_pct": 3.5,
+      "rlusd_touch_pct": 12,
+      "xrpl_touch_pct": 10,
+      "private_liquidity_pct": 58,
+      "retention_effect_pct": 6,
+      "confidence": 0.67,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/PHP"
+      ],
+      "summary": "Confirmed Ripple Payments customers in Australia/APAC remittance rails.",
+      "summary_es": "Clientes confirmados de Ripple Payments en los rails de remesas de Australia y APAC.",
+      "sources": [
+        "https://ripple.com/customer-case-study/flash-payments/",
+        "https://ripple.com/customer-case-study/hai-ha-money-transfer/"
+      ]
+    },
+    {
+      "id": "philippines_php_historical",
+      "name": "Filipinas / PHP historical ODL rail",
+      "region": "Philippines",
+      "category": "Historical ODL / Payments",
+      "evidence": "historical_confirmed",
+      "status_label": "Histórico confirmado; verificar live",
+      "corridors": [
+        "USD/PHP",
+        "APAC remittances"
+      ],
+      "partners": [
+        "Coins.ph historical",
+        "Ripple/ODL ecosystem"
+      ],
+      "stack": [
+        "ODL historical",
+        "Remittances",
+        "Payout"
+      ],
+      "base_volume_annual_usd": 38000000000,
+      "base_volume_label": "Philippines remittance market proxy; not current ODL volume",
+      "default_activation_pct": 3,
+      "direct_xrp_touch_pct": 4,
+      "rlusd_touch_pct": 8,
+      "xrpl_touch_pct": 8,
+      "private_liquidity_pct": 50,
+      "retention_effect_pct": 5,
+      "confidence": 0.48,
+      "book_symbols": [
+        "XRP/PHP",
+        "XRP/USD"
+      ],
+      "summary": "Useful corridor to keep, but marked historical/needs live validation instead of assuming current direct XRP flow.",
+      "summary_es": "Corredor útil de mantener, marcado como histórico. Necesita validación en vivo en lugar de asumir flujo directo actual de XRP.",
+      "sources": [
+        "https://ripple.com/customer-case-study/",
+        "https://www.worldbank.org/en/news/press-release/2024/12/18/remittances-to-low-and-middle-income-countries-to-reach-685-billion-in-2024"
+      ]
+    },
+    {
+      "id": "cbdc_stablecoin_pilots",
+      "name": "CBDC / government stablecoin pilots",
+      "region": "Palau / Bhutan / Montenegro / pilots",
+      "category": "CBDC / Stablecoin Pilot",
+      "evidence": "official_pilot",
+      "status_label": "Piloto",
+      "corridors": [
+        "CBDC",
+        "government stablecoin",
+        "public sector settlement"
+      ],
+      "partners": [
+        "Palau",
+        "Bhutan",
+        "Montenegro",
+        "Ripple CBDC platform"
+      ],
+      "stack": [
+        "XRPL private/public tech",
+        "CBDC platform",
+        "stablecoin pilots"
+      ],
+      "base_volume_annual_usd": 1000000000,
+      "base_volume_label": "Pilot-scale proxy; low weight by default",
+      "default_activation_pct": 1,
+      "direct_xrp_touch_pct": 0.2,
+      "rlusd_touch_pct": 1,
+      "xrpl_touch_pct": 12,
+      "private_liquidity_pct": 40,
+      "retention_effect_pct": 3,
+      "confidence": 0.45,
+      "book_symbols": [
+        "XRP/USD"
+      ],
+      "summary": "Important for narrative/architecture, not current XRP demand unless a bridge or public XRPL liquidity path is used.",
+      "summary_es": "Importante para la narrativa y arquitectura, pero sin demanda XRP actual salvo que se use un puente o ruta de liquidez XRPL pública.",
+      "sources": [
+        "https://ripple.com/insights/the-future-of-central-bank-digital-currency/",
+        "https://ripple.com/insights/ripple-impact-pilot-transforming-agricultural-finance-on-the-xrp-ledger/"
+      ]
+    },
+    {
+      "id": "xrp_spot_etfs",
+      "name": "XRP ETF / ETP institucional",
+      "region": "EE.UU. / Europa / Global",
+      "category": "ETF / ETP Institucional",
+      "evidence": "confirmed_product",
+      "status_label": "Producto confirmado",
+      "corridors": [
+        "XRP/USD spot",
+        "ETF USA",
+        "ETP Europa",
+        "Mercado secundario ETF",
+        "Acumulación institucional"
+      ],
+      "partners": [
+        "Canary Capital",
+        "Bitwise",
+        "Grayscale",
+        "Franklin Templeton",
+        "21Shares",
+        "REX-Osprey",
+        "CoinShares",
+        "Virtune"
+      ],
+      "stack": [
+        "Spot ETF USA",
+        "ETP Europa",
+        "Reducción de float institucional",
+        "Mercado secundario ETF",
+        "XRPL custody"
+      ],
+      "base_volume_annual_usd": 50000000000,
+      "base_volume_label": "Proxy de flujo institucional ETF/ETP; distingue XRP retenido de volumen secundario de acciones ETF",
+      "default_activation_pct": 15,
+      "direct_xrp_touch_pct": 85,
+      "rlusd_touch_pct": 5,
+      "xrpl_touch_pct": 10,
+      "private_liquidity_pct": 95,
+      "retention_effect_pct": 55,
+      "confidence": 0.85,
+      "etf_holdings_xrp_billion": 0.85,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/RLUSD",
+        "ETF/XRP-US"
+      ],
+      "summary": "XRP ETF/ETP products create regulated exposure. The model separates underlying XRP holdings, secondary ETF share volume and real XRP spot orderbooks.",
+      "summary_es": "Los ETF/ETP de XRP crean exposición regulada. El modelo separa XRP subyacente retenido, volumen secundario de acciones ETF y orderbooks spot reales de XRP.",
+      "sources": [
+        "https://ripple.com/insights/xrp-etfs-the-institutional-era-has-begun/",
+        "https://bitxrpetf.com/",
+        "https://etfs.grayscale.com/gxrp"
+      ]
+    },
+    {
+      "id": "lulu_uae_middle_east",
+      "name": "Lulu Exchange / UAE - Oriente Medio",
+      "region": "EAU / Oriente Medio / Asia del Sur",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "AED/INR",
+        "AED/PKR",
+        "AED/PHP",
+        "UAE remittances",
+        "Gulf cross-border"
+      ],
+      "partners": [
+        "Lulu Exchange",
+        "Ripple Payments"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "ODL",
+        "XRP settlement",
+        "RLUSD"
+      ],
+      "base_volume_annual_usd": 45000000000,
+      "base_volume_label": "UAE remittance market proxy; Lulu Exchange confirmed Ripple customer case",
+      "default_activation_pct": 8,
+      "direct_xrp_touch_pct": 12,
+      "rlusd_touch_pct": 28,
+      "xrpl_touch_pct": 20,
+      "private_liquidity_pct": 68,
+      "retention_effect_pct": 10,
+      "confidence": 0.79,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/AED"
+      ],
+      "summary": "Lulu Exchange uses Ripple Payments for cross-border payments in UAE and the Middle East. High volume remittance hub from South Asia to Gulf region.",
+      "summary_es": "Lulu Exchange usa Ripple Payments para pagos cross-border en EAU y Oriente Medio. Hub de remesas de alto volumen entre Asia del Sur y el Golfo.",
+      "sources": [
+        "https://ripple.com/customer-case-study/lulu-exchange/",
+        "https://ripple.com/ripple-press/ripple-expands-middle-east-presence/"
+      ]
+    },
+    {
+      "id": "rwa_xrpl_ecosystem",
+      "name": "Tokenización RWA — Ecosistema Global XRPL",
+      "region": "EE.UU. / Reino Unido / Global",
+      "category": "Tokenización RWA",
+      "evidence": "confirmed_product",
+      "status_label": "Confirmado (productos activos)",
+      "corridors": [
+        "USD tokenized assets",
+        "GBP tokenized bonds",
+        "EUR tokenized funds",
+        "T-bills / MMF XRPL"
+      ],
+      "partners": [
+        "Franklin Templeton (Benji US)",
+        "Archax (UK)",
+        "OpenEden",
+        "Zoniqx",
+        "HashNote"
+      ],
+      "stack": [
+        "XRPL native assets",
+        "custody",
+        "rlusd",
+        "Tokenization infrastructure"
+      ],
+      "base_volume_annual_usd": 8000000000,
+      "base_volume_label": "AUM + secondary market proxy para RWA activos en XRPL; excluye DBS/Franklin sgBENJI ya modelado",
+      "default_activation_pct": 8,
+      "direct_xrp_touch_pct": 25,
+      "rlusd_touch_pct": 20,
+      "xrpl_touch_pct": 85,
+      "private_liquidity_pct": 55,
+      "retention_effect_pct": 68,
+      "confidence": 0.68,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/RLUSD"
+      ],
+      "summary": "Real-world asset tokenization on XRPL (Franklin Benji US, Archax, OpenEden, Zoniqx, HashNote). Assets live permanently on XRPL — high retention effect, low direct XRP flow but strong XRPL dependency.",
+      "summary_es": "Tokenización de activos del mundo real en XRPL (Franklin Benji EE.UU., Archax UK, OpenEden, Zoniqx, HashNote). Los activos residen permanentemente en XRPL — alto efecto de retención, bajo flujo directo XRP pero fuerte dependencia del ledger.",
+      "sources": [
+        "https://www.franklintempleton.com/strategies/franklin-onchain-us-government-money-fund",
+        "https://archax.com/",
+        "https://openeden.com/",
+        "https://zoniqx.com/"
+      ]
+    },
+    {
+      "id": "dtcc_derivatives_collateral",
+      "name": "DTCC Derivados — XRP/RLUSD Colateral vía Hidden Road",
+      "region": "EE.UU.",
+      "category": "Derivados / Colateral Institucional",
+      "evidence": "ecosystem_plausible",
+      "status_label": "Especulativo — ecosistema plausible",
+      "corridors": [
+        "USD derivatives margin",
+        "FX derivatives collateral",
+        "Fixed income derivatives"
+      ],
+      "partners": [
+        "Hidden Road",
+        "DTCC",
+        "Ripple Prime"
+      ],
+      "stack": [
+        "prime",
+        "custody",
+        "Derivatives clearing",
+        "Collateral management"
+      ],
+      "base_volume_annual_usd": 15000000000,
+      "base_volume_label": "Proxy muy especulativo — margen de derivados compensados en DTCC vía Hidden Road usando XRP/RLUSD como colateral elegible",
+      "default_activation_pct": 5,
+      "direct_xrp_touch_pct": 55,
+      "rlusd_touch_pct": 30,
+      "xrpl_touch_pct": 10,
+      "private_liquidity_pct": 85,
+      "retention_effect_pct": 75,
+      "confidence": 0.2,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/RLUSD"
+      ],
+      "summary": "Speculative: Hidden Road (Ripple acquisition) could bring XRP or RLUSD as eligible collateral for DTCC-cleared derivatives. High retention effect if confirmed — collateral is locked. Not announced, not in pilot.",
+      "summary_es": "Especulativo: Hidden Road (adquisición Ripple) podría llevar XRP o RLUSD como colateral elegible para derivados compensados en DTCC. Alto efecto de retención si se confirma — el colateral queda bloqueado. No anunciado, no en piloto.",
+      "sources": [
+        "https://ripple.com/ripple-press/ripple-acquires-hidden-road/",
+        "https://www.dtcc.com/"
+      ]
+    },
+    {
+      "id": "onafriq_africa_payments",
+      "name": "Onafriq / África cross-border",
+      "region": "África / GCC / Global remittances",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado",
+      "corridors": [
+        "Africa remittances",
+        "MFS Africa/Onafriq network",
+        "GCC-Africa",
+        "Mobile money rails"
+      ],
+      "partners": [
+        "Onafriq",
+        "Ripple Payments"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "ODL optional",
+        "Mobile money",
+        "RLUSD optional"
+      ],
+      "base_volume_annual_usd": 25000000000,
+      "base_volume_label": "Proxy de remesas y pagos móviles África vinculados a red Onafriq; no todo toca XRP",
+      "default_activation_pct": 7,
+      "direct_xrp_touch_pct": 10,
+      "rlusd_touch_pct": 18,
+      "xrpl_touch_pct": 16,
+      "private_liquidity_pct": 52,
+      "retention_effect_pct": 8,
+      "confidence": 0.72,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/USDT"
+      ],
+      "summary": "Onafriq extends Ripple Payments reach into African mobile-money corridors. XRP touch is configurable because routing can be private, fiat, stablecoin or bridge-based.",
+      "summary_es": "Onafriq amplía el alcance de Ripple Payments hacia corredores africanos de dinero móvil. El toque XRP es configurable porque el enrutamiento puede ser privado, fiat, stablecoin o bridge.",
+      "sources": [
+        "https://ripple.com/ripple-press/ripple-partners-with-mfs-africa/"
+      ]
+    },
+    {
+      "id": "canada_us_payment_corridor",
+      "name": "Canadá / EE.UU. corredor USD-CAD",
+      "region": "Canadá / Estados Unidos",
+      "category": "Ripple Payments",
+      "evidence": "confirmed_customer_case",
+      "status_label": "Confirmado / histórico operacional",
+      "corridors": [
+        "USD/CAD",
+        "North America SME payments",
+        "Cross-border payouts"
+      ],
+      "partners": [
+        "Ripple Payments ecosystem",
+        "North America payment partners"
+      ],
+      "stack": [
+        "Ripple Payments",
+        "Treasury",
+        "Custody optional"
+      ],
+      "base_volume_annual_usd": 18000000000,
+      "base_volume_label": "Proxy conservador para corredor Norteamérica; requiere validación live por partner concreto",
+      "default_activation_pct": 5,
+      "direct_xrp_touch_pct": 8,
+      "rlusd_touch_pct": 14,
+      "xrpl_touch_pct": 12,
+      "private_liquidity_pct": 46,
+      "retention_effect_pct": 6,
+      "confidence": 0.58,
+      "book_symbols": [
+        "XRP/USD",
+        "XRP/USDT"
+      ],
+      "summary": "North America payment corridor placeholder with conservative activation. It exists to stop the model from ignoring USD/CAD flows, but it remains lower-confidence until tied to specific live evidence.",
+      "summary_es": "Corredor Norteamérica con activación conservadora. Evita que el modelo ignore flujos USD/CAD, pero mantiene menor confianza hasta vincularlo a pruebas específicas en vivo.",
+      "sources": [
+        "https://ripple.com/solutions/payments/"
+      ]
+    },
+    {
+      "id": "turkey_mena_retail_liquidity",
+      "name": "Turquía / MENA liquidez retail XRP",
+      "region": "Turquía / MENA",
+      "category": "Liquidez pública / CEX",
+      "evidence": "ecosystem_plausible",
+      "status_label": "Mercado público a vigilar",
+      "corridors": [
+        "XRP/TRY",
+        "XRP/USDT MENA",
+        "Retail liquidity"
+      ],
+      "partners": [
+        "CEX regionales",
+        "Market makers"
+      ],
+      "stack": [
+        "CEX orderbooks",
+        "Retail liquidity",
+        "Bridge optional"
+      ],
+      "base_volume_annual_usd": 12000000000,
+      "base_volume_label": "Proxy de liquidez pública regional; no implica uso Ripple Payments",
+      "default_activation_pct": 4,
+      "direct_xrp_touch_pct": 18,
+      "rlusd_touch_pct": 2,
+      "xrpl_touch_pct": 4,
+      "private_liquidity_pct": 22,
+      "retention_effect_pct": 3,
+      "confidence": 0.42,
+      "book_symbols": [
+        "XRP/USDT",
+        "XRP/USD"
+      ],
+      "summary": "Regional public liquidity watch for TRY/MENA markets. This is not Ripple infrastructure by itself; it only improves market-depth awareness.",
+      "summary_es": "Mercado público regional TRY/MENA a vigilar. No es infraestructura Ripple por sí mismo; solo mejora la lectura de profundidad de mercado.",
+      "sources": [
+        "https://www.coingecko.com/en/coins/xrp"
+      ]
+    }
+  ]
+}

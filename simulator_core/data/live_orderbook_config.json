@@ -1,0 +1,225 @@
+{
+  "cex": {
+    "enabled": true,
+    "depth_limit": 100,
+    "quote_fx": {
+      "USD": 1.0,
+      "USDT": 1.0,
+      "USDC": 1.0,
+      "RLUSD": 1.0,
+      "EUR": 1.09,
+      "MXN": 0.058,
+      "BRL": 0.19,
+      "PHP": 0.018,
+      "JPY": 0.0067,
+      "KRW": 0.00073,
+      "GBP": 1.27,
+      "AUD": 0.66,
+      "CAD": 0.73,
+      "TRY": 0.031,
+      "AED": 0.2723
+    },
+    "exchanges": {
+      "binance": [
+        "XRP/USDT"
+      ],
+      "coinbase": [
+        "XRP/USD"
+      ],
+      "kraken": [
+        "XRP/USD",
+        "XRP/EUR"
+      ],
+      "bitstamp": [
+        "XRP/USD",
+        "XRP/EUR"
+      ],
+      "bitget": [
+        "XRP/USDT"
+      ],
+      "bybit": [
+        "XRP/USDT"
+      ],
+      "okx": [
+        "XRP/USDT"
+      ],
+      "kucoin": [
+        "XRP/USDT"
+      ],
+      "bitso": [
+        "XRP/MXN"
+      ],
+      "upbit": [
+        "XRP/KRW"
+      ],
+      "gateio": [
+        "XRP/USDT"
+      ],
+      "mexc": [
+        "XRP/USDT"
+      ],
+      "bitmart": [
+        "XRP/USDT"
+      ],
+      "htx": [
+        "XRP/USDT"
+      ],
+      "crypto_com": [
+        "XRP/USD",
+        "XRP/USDT"
+      ],
+      "bitfinex": [
+        "XRP/USD",
+        "XRP/USDT"
+      ]
+    },
+    "timeout_ms": 9000
+  },
+  "xrpl": {
+    "enabled": true,
+    "rpc_url": "https://xrplcluster.com/",
+    "fallback_nodes": [
+      "https://xrplcluster.com/",
+      "https://s1.ripple.com:51234/",
+      "https://s2.ripple.com:51234/"
+    ],
+    "timeout_sec": 12,
+    "limit": 400,
+    "books": [
+      {
+        "label": "XRP/USD Bitstamp XRPL",
+        "symbol": "XRP/USD",
+        "enabled": true,
+        "currency": "USD",
+        "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+        "usd_factor": 1.0
+      },
+      {
+        "label": "XRP/USD GateHub XRPL",
+        "symbol": "XRP/USD",
+        "enabled": true,
+        "currency": "USD",
+        "issuer": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+        "usd_factor": 1.0
+      },
+      {
+        "label": "XRP/RLUSD Ripple XRPL",
+        "symbol": "XRP/RLUSD",
+        "enabled": true,
+        "currency": "524C555344000000000000000000000000000000",
+        "currency_display": "RLUSD",
+        "issuer": "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De",
+        "usd_factor": 1.0
+      },
+      {
+        "label": "XRP/EUR GateHub XRPL",
+        "symbol": "XRP/EUR",
+        "enabled": true,
+        "currency": "EUR",
+        "issuer": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+        "usd_factor": 1.09
+      },
+      {
+        "label": "XRP/MXN Bitso XRPL",
+        "symbol": "XRP/MXN",
+        "enabled": false,
+        "currency": "MXN",
+        "issuer": "rG6FZ31hDHN1K5Dkbma3PSB5uVCuVVRzfn",
+        "usd_factor": 0.058,
+        "note": "Disabled by default: historical/private ODL can bypass public XRPL DEX."
+      },
+      {
+        "label": "XRP/BRL Braza XRPL",
+        "symbol": "XRP/BRL",
+        "enabled": false,
+        "currency": "BRL",
+        "issuer": "rBRzMsVMKbsQh1m9JWFbNXrGdJQwZaWsSh",
+        "usd_factor": 0.19,
+        "note": "Disabled by default until issuer/liquidity is verified live."
+      },
+      {
+        "label": "XRP/PHP Coins.ph XRPL",
+        "symbol": "XRP/PHP",
+        "enabled": false,
+        "currency": "PHP",
+        "issuer": "rBcZVnHPDnFrHPYWgNdCQNMSJnLfauwi8j",
+        "usd_factor": 0.018,
+        "note": "Historical corridor; enable only if live book validates."
+      }
+    ]
+  },
+  "etf": {
+    "enabled": true,
+    "timeout_sec": 10,
+    "sleep_sec": 0.15,
+    "tickers": [
+      {
+        "ticker": "XRPC",
+        "name": "Canary Capital XRP ETF",
+        "symbol": "ETF/XRP-US",
+        "source_url": "https://www.nasdaq.com/market-activity/etf/xrpc"
+      },
+      {
+        "ticker": "XRP",
+        "name": "Bitwise XRP ETF",
+        "symbol": "ETF/XRP-US",
+        "source_url": "https://bitxrpetf.com/"
+      },
+      {
+        "ticker": "GXRP",
+        "name": "Grayscale XRP Trust ETF",
+        "symbol": "ETF/XRP-US",
+        "source_url": "https://etfs.grayscale.com/gxrp"
+      },
+      {
+        "ticker": "XRPZ",
+        "name": "Franklin XRP ETF",
+        "symbol": "ETF/XRP-US",
+        "source_url": "https://www.franklintempleton.com/investments/options/exchange-traded-funds/products/47318/SINGLCLASS/franklin-xrp-etf/XRPZ"
+      },
+      {
+        "ticker": "TOXR",
+        "name": "21Shares XRP ETF",
+        "symbol": "ETF/XRP-US",
+        "source_url": "https://www.21shares.com/en-us/products-us/toxr"
+      },
+      {
+        "ticker": "XRPR",
+        "name": "REX-Osprey XRP ETF",
+        "symbol": "ETF/XRP-US",
+        "source_url": "https://www.rexshares.com/"
+      },
+      {
+        "ticker": "XRP.TO",
+        "name": "Evolve XRP ETF",
+        "symbol": "ETP/XRP-CA",
+        "source_url": "https://evolveetfs.com/product/xrp/"
+      },
+      {
+        "ticker": "AXRP.SW",
+        "name": "21Shares XRP ETP",
+        "symbol": "ETP/XRP-EU",
+        "source_url": "https://www.21shares.com/"
+      }
+    ]
+  },
+  "web_auto_refresh_sec": 60,
+  "updater": {
+    "command": "python main.py --live-orderbooks --loop --interval-sec 60",
+    "bat": "ACTUALIZAR_LIVE_ORDERBOOKS_XRPL_ETF_LOOP.bat",
+    "notes": "Actualiza orderbooks CEX, XRPL DEX y ETF/ETP; la web recarga el snapshot cada 60s. La fila live_aggregate es visual y no entra en cálculo para evitar doble conteo."
+  },
+  "orderbook_depth_cursor": {
+    "enabled": true,
+    "levels_pct": [
+      0.1,
+      0.25,
+      0.5,
+      1,
+      2,
+      5
+    ],
+    "default_pct": 1,
+    "description": "La UI puede elegir la banda de profundidad real que alimenta slippage y depth dinámica."
+  }
+}

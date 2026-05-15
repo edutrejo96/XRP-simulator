@@ -1,0 +1,29 @@
+1  - ACDC - Highway to Hell -> media/acdc_highway_to_hell.mp3
+2  - Beat It - Michael Jackson -> media/beat_it_michael_jackson.mp3
+3  - Bee Gees - Night Fever -> media/bee_gees_night_fever.mp3
+4  - Bruno Mars - 24K Magic -> media/bruno_mars_24k_magic.mp3
+5  - Elvis Presley - Jailhouse Rock -> media/elvis_presley_jailhouse_rock.mp3
+6  - Seal - Fly Like An Eagle (Space Jam) -> media/seal_fly_like_an_eagle.mp3
+7  - 88GLAM - Lil Boat -> media/88glam_lil_boat.mp3
+8  - Eminem - Lose Yourself -> media/eminem_lose_yourself.mp3
+9  - Post Malone - Hollywood's Bleeding -> media/post_malone_hollywoods_bleeding.mp3
+10 - Post Malone - Motley Crew -> media/post_malone_motley_crew.mp3
+11 - Post Malone - Congratulations -> media/post_malone_congratulations.mp3
+12 - Rema - Calm Down -> media/rema_calm_down.mp3
+13 - Fat Joe - Lean Back -> media/fat_joe_lean_back.mp3
+14 - Spiderbait - Black Betty -> media/spiderbait_black_betty.mp3
+15 - Akon - Smack That -> media/akon_smack_that.mp3
+16 - Davido - Skelewu -> media/davido_skelewu.mp3
+17 - Gerry & The Pacemakers - You'll Never Walk Alone -> media/gerry_youll_never_walk_alone.mp3
+18 - Bracket - Mama Africa -> media/bracket_mama_africa.mp3
+19 - GRITS - Ooh Ahh (My Life Be Like) -> media/grits_ooh_ahh.mp3
+20 - Fort Minor - Where'd U Go -> media/fort_minor_whered_u_go.mp3
+21 - Mario Winans - I Don't Wanna Know -> media/mario_winans_i_dont_wanna_know.mp3
+22 - Rayvanny ft. Diamond Platnumz - Tetema -> media/rayvanny_tetema.mp3
+23 - Lithe - Fall Back -> media/lithe_fall_back.mp3
+24 - Melvoni ft. 21 Savage - Counting Sheep -> media/melvoni_counting_sheep.mp3
+25 - Melvoni - No Man's Land -> media/melvoni_no_mans_land.mp3
+26 - Ndotz & Dj Mac - Watch Me Now -> media/ndotz_watch_me_now.mp3
+27 - Oualid - Jini ft. F1rstman -> media/oualid_jini.mp3
+28 - Sani Knight - BADASF -> media/sani_knight_badasf.mp3
+29 - 1nonly & 870glizzy - CHUMPCHANGE -> media/1nonly_chumpchange.mp3

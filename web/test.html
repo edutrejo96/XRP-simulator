@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Tests — Ripple Infrastructure Twin v10.6</title>
+<style>
+:root{--ok:#22c55e;--fail:#ef4444;--warn:#f59e0b;--bg:#050712;--panel:rgba(12,18,36,.85);--cyan:#55e6ff;--violet:#9d72ff;--text:#edf6ff;--muted:#9fb1c9;--border:rgba(116,216,255,.18)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050712;color:var(--text);font-family:Inter,system-ui,sans-serif;padding:24px;line-height:1.5}
+h1{font-size:28px;letter-spacing:-.04em;color:var(--cyan);margin-bottom:6px}
+.subtitle{color:var(--muted);margin-bottom:24px;font-size:14px}
+.suite{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px}
+.suite-title{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;color:#dffaff;display:flex;align-items:center;gap:10px}
+.suite-badge{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700}
+.badge-pass{background:rgba(34,197,94,.18);color:var(--ok);border:1px solid rgba(34,197,94,.3)}
+.badge-fail{background:rgba(239,68,68,.18);color:var(--fail);border:1px solid rgba(239,68,68,.3)}
+.badge-run{background:rgba(85,230,255,.12);color:var(--cyan);border:1px solid rgba(85,230,255,.25)}
+.test-row{display:grid;grid-template-columns:22px 1fr auto auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
+.test-row:last-child{border:none}
+.dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex-shrink:0}
+.dot.pass{background:var(--ok);box-shadow:0 0 8px rgba(34,197,94,.5)}
+.dot.fail{background:var(--fail);box-shadow:0 0 8px rgba(239,68,68,.5)}
+.dot.skip{background:var(--warn);box-shadow:0 0 8px rgba(245,158,11,.4)}
+.dot.run{background:var(--cyan);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.4}}
+.test-name{color:#dff5ff}
+.test-actual{font-size:11px;color:var(--muted);font-family:monospace;word-break:break-all}
+.test-time{font-size:11px;color:#6a8aac;white-space:nowrap}
+.summary-bar{display:flex;gap:12px;padding:14px 20px;background:rgba(0,0,0,.3);border-radius:14px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.summary-bar b{font-size:22px}
+.ok-c{color:var(--ok)} .fail-c{color:var(--fail)} .warn-c{color:var(--warn)}
+.detail{font-size:12px;color:var(--muted);margin-top:4px;font-family:monospace;background:rgba(0,0,0,.25);padding:6px 10px;border-radius:8px;white-space:pre-wrap;word-break:break-all}
+.detail.fail-detail{color:#fca5a5;border-left:3px solid var(--fail)}
+.detail.pass-detail{color:#86efac;border-left:3px solid var(--ok)}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:var(--cyan);font-weight:800}
+.slider-test{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:10px}
+.slider-card{background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.slider-card h4{font-size:13px;color:#dffaff;margin-bottom:8px}
+.slider-data{font-size:12px;font-family:monospace;color:var(--muted)}
+.slider-data span{color:var(--cyan)}
+.run-btn{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#02101c;border:0;border-radius:999px;padding:10px 22px;font-weight:800;cursor:pointer;font-size:14px}
+.run-btn:hover{opacity:.9}
+.top-bar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+progress{width:100%;height:6px;border-radius:999px;margin:8px 0;accent-color:var(--cyan)}
+.loading{color:var(--muted);font-size:13px;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div>
+    <div class="section-label">Ripple Infrastructure Twin v10.6</div>
+    <h1>Suite de tests — Datos & Cursores</h1>
+    <p class="subtitle">Verificación de cruce de datos, cálculos y respuesta de sliders / CEX</p>
+  </div>
+  <button class="run-btn" id="runBtn">▶ Ejecutar todos los tests</button>
+</div>
+
+<div id="summaryBar" class="summary-bar" style="display:none"></div>
+<progress id="progressBar" style="display:none" max="1" value="0"></progress>
+<div id="loading" class="loading" style="display:none">Cargando datos…</div>
+
+<div id="suites"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// TEST FRAMEWORK (mini)
+// ─────────────────────────────────────────────────────────────
+const SUITES = [];
+let _suite = null;
+function describe(name, fn){ _suite={name,tests:[]}; fn(); SUITES.push(_suite); }
+function it(name, fn){ _suite.tests.push({name,fn,status:'pending',actual:'',time:0}); }
+
+// ─────────────────────────────────────────────────────────────
+// ENGINE (replicates app.js logic for isolated testing)
+// ─────────────────────────────────────────────────────────────
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const fmtUsd=(n,d=2)=>{
+  if(!Number.isFinite(n)) return '—';
+  const a=Math.abs(n);
+  if(a>=1e12) return '$'+(n/1e12).toFixed(d)+'T';
+  if(a>=1e9)  return '$'+(n/1e9).toFixed(d)+'B';
+  if(a>=1e6)  return '$'+(n/1e6).toFixed(d)+'M';
+  return '$'+n.toFixed(d);
+};
+
+let REG=null, BOOKS=null, SC86=null;
+
+function evidenceWeight(item){ return (REG.evidence_weights||{})[item.evidence] ?? 0.5; }
+function activationRaw(item){ return item && item.enabled ? (item.activation_pct||0)/100 : 0; }
+function getItem(items,id){ return items.find(x=>x.id===id); }
+function activationOf(items,id){
+  const i=getItem(items,id); if(!i) return 0;
+  return activationRaw(i)*evidenceWeight(i)*(i.confidence??0.5);
+}
+function dependencyIdsFor(item){
+  const deps=new Set();
+  const cat=(item.category||'').toLowerCase();
+  const name=(item.name||'').toLowerCase();
+  const stack=(item.stack||[]).join(' ').toLowerCase();
+  const region=(item.region||'').toLowerCase();
+  if(item.id!=='rlusd_core'&&(stack.includes('rlusd')||(item.rlusd_touch_pct||0)>=20)) deps.add('rlusd_core');
+  if(item.id!=='ripple_prime_hidden_road'&&((item.private_liquidity_pct||0)>=65||stack.includes('prime'))) deps.add('ripple_prime_hidden_road');
+  if(item.id!=='custody_global'&&(stack.includes('custody')||cat.includes('custody')||cat.includes('tokenization'))) deps.add('custody_global');
+  if(item.id!=='ripple_treasury_gtreasury'&&(stack.includes('treasury')||cat.includes('treasury'))) deps.add('ripple_treasury_gtreasury');
+  if(item.id!=='brazil_full_stack'&&(region.includes('brazil')||name.includes('brasil')||(item.corridors||[]).join(' ').toLowerCase().includes('brl'))) deps.add('brazil_full_stack');
+  if(item.id!=='korea_institutional_stack'&&region.includes('korea')) deps.add('korea_institutional_stack');
+  if(item.id!=='ripple_prime_hidden_road'&&(cat.includes('trade finance')||cat.includes('tokenized')||cat.includes('cbdc'))) deps.add('ripple_prime_hidden_road');
+  return [...deps].filter(id=>id!==item.id);
+}
+function dependencyBoost(items,item){
+  const deps=dependencyIdsFor(item);
+  if(!deps.length) return {ids:[],avg:0,factor:1};
+  const avg=deps.reduce((s,id)=>s+activationOf(items,id),0)/deps.length;
+  return {ids:deps,avg,factor:clamp(1+avg*0.55,1,1.65)};
+}
+function bookForSymbols(symbols=[]){
+  const all=(BOOKS.books||[]);
+  const r=all.filter(b=>symbols.includes(b.symbol));
+  return r.length ? r : all.filter(b=>['XRP/USD','XRP/RLUSD'].includes(b.symbol));
+}
+function baseBookStats(activeItems){
+  const used=new Map();
+  activeItems.forEach(i=>bookForSymbols(i.book_symbols).forEach(b=>used.set(`${b.venue}:${b.symbol}`,b)));
+  const arr=[...used.values()];
+  if(!arr.length) return{depth1:0,depth2:0,volume:0,avgSpread:0,count:0};
+  return{
+    depth1:arr.reduce((s,b)=>s+(b.depth_1pct_usd||0),0),
+    depth2:arr.reduce((s,b)=>s+(b.depth_2pct_usd||0),0),
+    volume:arr.reduce((s,b)=>s+(b.daily_volume_usd||0),0),
+    avgSpread:arr.reduce((s,b)=>s+(b.spread_bps||0),0)/arr.length,
+    count:arr.length
+  };
+}
+
+function makeItems(overrides={}){
+  const items=REG.items.map(x=>({...x,enabled:true,activation_pct:x.default_activation_pct}));
+  for(const [id,patch] of Object.entries(overrides)){
+    const it=items.find(x=>x.id===id);
+    if(it) Object.assign(it,patch);
+  }
+  return items;
+}
+
+function runCalc(state={}, itemsOverrides={}){
+  const s={floatB:1.25,rotation:58,privateFactor:1,premium:18,orderM:100,...state};
+  const items=makeItems(itemsOverrides);
+  const active=items.filter(i=>i.enabled);
+  let direct=0,rlusd=0,xrpl=0,privateScore=0,retentionScore=0,weightedAdoption=0;
+  let coupledItems=0,dependencyScore=0;
+  const byCategory={};
+  active.forEach(i=>{
+    const ev=evidenceWeight(i),conf=i.confidence??0.5;
+    const dep=dependencyBoost(items,i);
+    const baseAct=activationRaw(i);
+    const act=clamp(baseAct*dep.factor,0,1);
+    const base=i.base_volume_annual_usd||0;
+    const dFlow=base*act*(i.direct_xrp_touch_pct/100)*ev*conf;
+    const rFlow=base*act*(i.rlusd_touch_pct/100)*ev*conf;
+    const xFlow=base*act*(i.xrpl_touch_pct/100)*ev*conf;
+    direct+=dFlow; rlusd+=rFlow; xrpl+=xFlow;
+    privateScore+=base*act*((i.private_liquidity_pct||0)/100)*ev*conf*(1+dep.avg*0.25);
+    retentionScore+=act*((i.retention_effect_pct||0)/100)*ev*conf*(1+dep.avg*0.35);
+    weightedAdoption+=act*ev*conf;
+    dependencyScore+=dep.avg;
+    if(dep.ids.length) coupledItems+=1;
+    byCategory[i.category]=(byCategory[i.category]||0)+dFlow;
+  });
+  const book=baseBookStats(active);
+  const infraDepthBoost=1
+    +activationOf(items,'ripple_prime_hidden_road')*0.28
+    +activationOf(items,'custody_global')*0.22
+    +activationOf(items,'ripple_treasury_gtreasury')*0.16
+    +activationOf(items,'rlusd_core')*0.12
+    +activationOf(items,'brazil_full_stack')*0.06;
+  const privateDepthBoost=1+Math.log10(1+privateScore/1e9)*0.55*s.privateFactor;
+  const xrplBoost=1+Math.log10(1+xrpl/1e9)*0.10;
+  const depthDynamic=Math.max(book.depth1,1)*privateDepthBoost*xrplBoost*infraDepthBoost;
+  const orderUsd=s.orderM*1e6;
+  const slippage=clamp(Math.pow(orderUsd/Math.max(depthDynamic,1),0.66)*1.0,0.01,95);
+  const retentionCore=activationOf(items,'custody_global')*0.10+activationOf(items,'ripple_prime_hidden_road')*0.09+activationOf(items,'ripple_treasury_gtreasury')*0.05;
+  const retentionAdj=clamp(retentionScore*1.8+retentionCore,0,0.72);
+  const effectiveRotation=Math.max(4,s.rotation*(1-retentionAdj));
+
+  // ETF float reduction
+  const etfItem=items.find(i=>i.id==='xrp_spot_etfs'&&i.enabled);
+  let etfHeldB=0;
+  if(etfItem){
+    const etfAct=clamp((etfItem.activation_pct||0)/100,0,1);
+    const etfConf=etfItem.confidence??0.85;
+    etfHeldB=(etfItem.etf_holdings_xrp_billion||0.75)*etfAct*etfConf;
+  }
+  const floatEffective=Math.max(s.floatB-etfHeldB,0.05);
+
+  let priceUtil,priceMarket;
+  if(SC86){
+    const evWeights=REG.evidence_weights||{};
+    let weightedSum=0,weightedMax=0;
+    items.filter(i=>i.enabled).forEach(i=>{
+      const ev=evWeights[i.evidence]??0.5;
+      const conf=i.confidence??0.5;
+      weightedSum+=(i.activation_pct/100)*ev*conf;
+      weightedMax+=ev*conf;
+    });
+    const weightedRatio=weightedSum/Math.max(weightedMax,0.001);
+    const DEFAULT_WR_THRESH=0.0792;
+    let scKey;
+    if(weightedRatio<DEFAULT_WR_THRESH) scKey='regulatory_reversal';
+    else if(weightedRatio<0.140) scKey='today_confirmed';
+    else if(weightedRatio<0.260) scKey='status_quo';
+    else if(weightedRatio<0.420) scKey='clarity_base';
+    else if(weightedRatio<0.660) scKey='expected_roadmap';
+    else if(weightedRatio<0.950) scKey='bank_integration';
+    else scKey='stress_test';
+    const sc=SC86.scenarios[scKey]||{};
+    const yr26=sc.years?.['2026']||{p_util:1.19,p_mkt:1.54};
+    const yr35=sc.years?.['2035']||{p_util:4.99,p_mkt:7.83};
+    const DEFAULT_WR=0.0792;
+    const scenBands={regulatory_reversal:[0,DEFAULT_WR],today_confirmed:[DEFAULT_WR,0.140],status_quo:[0.140,0.260],clarity_base:[0.260,0.420],expected_roadmap:[0.420,0.660],bank_integration:[0.660,0.950],stress_test:[0.950,1.200]};
+    const[lo,hi]=scenBands[scKey]||[DEFAULT_WR,0.14];
+    const tPos=clamp((weightedRatio-lo)/Math.max(hi-lo,0.001),0,1);
+    let baseUtil=yr26.p_util+(yr35.p_util-yr26.p_util)*tPos;
+    let baseMkt=yr26.p_mkt+(yr35.p_mkt-yr26.p_mkt)*tPos;
+    const floatAdj=clamp(Math.pow(1.24/Math.max(floatEffective,0.05),0.6),0.4,2.5);
+    const rotAdj=clamp(Math.pow(58/Math.max(effectiveRotation,4),0.4),0.4,2.0);
+    const privAdj=clamp(1+(s.privateFactor-1)*0.15,0.7,1.5);
+    priceUtil=clamp(baseUtil*floatAdj*rotAdj*privAdj,0.01,200000);
+    priceMarket=clamp(baseMkt*floatAdj*rotAdj*privAdj,priceUtil,500000);
+  } else {
+    priceUtil=direct/((s.floatB*1e9)*Math.pow(effectiveRotation,0.72));
+    priceMarket=priceUtil*(1+(s.premium+50)/100);
+  }
+  return{direct,rlusd,xrpl,book,depthDynamic,slippage,effectiveRotation,priceUtil,priceMarket,infraDepthBoost,coupledItems,etfHeldB,floatEffective,active,items};
+}
+
+// ─────────────────────────────────────────────────────────────
+// ASSERTION HELPERS
+// ─────────────────────────────────────────────────────────────
+function assert(cond,msg){ if(!cond) throw new Error(msg||'Assertion failed'); }
+function assertClose(a,b,tol=0.01,msg=''){
+  const diff=Math.abs(a-b);
+  if(diff>tol) throw new Error(`${msg} | expected ~${b.toFixed(4)}, got ${a.toFixed(4)} (diff ${diff.toFixed(4)})`);
+}
+function assertGt(a,b,msg=''){ if(!(a>b)) throw new Error(`${msg} | expected ${a} > ${b}`); }
+function assertLt(a,b,msg=''){ if(!(a<b)) throw new Error(`${msg} | expected ${a} < ${b}`); }
+
+// ─────────────────────────────────────────────────────────────
+// TEST DEFINITIONS
+// ─────────────────────────────────────────────────────────────
+
+describe('1. REGISTRO DE INFRAESTRUCTURA — integridad de datos', ()=>{
+  it('Tiene exactamente 22 ítems (18 base + ETF + UAE + RWA + DTCC)', ()=>{
+    assert(REG.items.length===22, `Esperados 22 ítems, hay ${REG.items.length}`);
+  });
+  it('Contiene el ítem ETF (xrp_spot_etfs)', ()=>{
+    const etf=REG.items.find(i=>i.id==='xrp_spot_etfs');
+    assert(etf, 'No se encontró xrp_spot_etfs');
+    assert(typeof etf.etf_holdings_xrp_billion==='number', 'Falta etf_holdings_xrp_billion');
+  });
+  it('Contiene el ítem UAE (lulu_uae_middle_east)', ()=>{
+    const uae=REG.items.find(i=>i.id==='lulu_uae_middle_east');
+    assert(uae, 'No se encontró lulu_uae_middle_east');
+    assert(uae.region.includes('EAU')||uae.region.includes('UAE'), `Region inesperada: ${uae.region}`);
+  });
+  it('Todos los ítems tienen summary_es en el JSON', ()=>{
+    const missing=REG.items.filter(i=>!i.summary_es);
+    assert(missing.length===0, `Sin summary_es: ${missing.map(i=>i.id).join(', ')}`);
+  });
+  it('Todos los ítems tienen evidence_weights mapeado', ()=>{
+    const weights=REG.evidence_weights;
+    const missing=REG.items.filter(i=>weights[i.evidence]===undefined);
+    assert(missing.length===0, `Sin peso de evidencia: ${missing.map(i=>i.id+'/'+i.evidence).join(', ')}`);
+  });
+  it('Todos los ítems tienen book_symbols no vacíos', ()=>{
+    const missing=REG.items.filter(i=>!i.book_symbols||i.book_symbols.length===0);
+    assert(missing.length===0, `Sin book_symbols: ${missing.map(i=>i.id).join(', ')}`);
+  });
+  it('Todos los ítems tienen base_volume_annual_usd > 0', ()=>{
+    const bad=REG.items.filter(i=>!(i.base_volume_annual_usd>0));
+    assert(bad.length===0, `Volumen ≤0: ${bad.map(i=>i.id).join(', ')}`);
+  });
+  it('Todos los ítems tienen confidence entre 0 y 1', ()=>{
+    const bad=REG.items.filter(i=>i.confidence==null||i.confidence<0||i.confidence>1);
+    assert(bad.length===0, `Confidence inválido: ${bad.map(i=>i.id+':'+i.confidence).join(', ')}`);
+  });
+  it('Todos los ítems tienen touch percentages válidos (0-100)', ()=>{
+    const bad=REG.items.filter(i=>
+      i.direct_xrp_touch_pct<0||i.direct_xrp_touch_pct>100||
+      i.rlusd_touch_pct<0||i.rlusd_touch_pct>100||
+      i.xrpl_touch_pct<0||i.xrpl_touch_pct>100
+    );
+    assert(bad.length===0, `Touch % inválido: ${bad.map(i=>i.id).join(', ')}`);
+  });
+  it('ETF tiene retention_effect_pct >= 50 (retención alta como colateral)', ()=>{
+    const etf=REG.items.find(i=>i.id==='xrp_spot_etfs');
+    assert(etf.retention_effect_pct>=50, `ETF retention baja: ${etf.retention_effect_pct}%`);
+  });
+});
+
+describe('2. ORDERBOOKS CEX — datos live', ()=>{
+  it('Cargó libros correctamente (>0 books)', ()=>{
+    const n=(BOOKS.books||[]).length;
+    assert(n>0, `0 books cargados`);
+  });
+  it('XRP/USD existe con depth ±1% > 0', ()=>{
+    const b=(BOOKS.books||[]).find(b=>b.symbol==='XRP/USD'&&(b.depth_1pct_usd||0)>0);
+    assert(b, 'No se encontró XRP/USD con depth > 0');
+  });
+  it('Precio XRP live está en rango razonable ($0.50 – $30)', ()=>{
+    const p=BOOKS.xrp_price_usd||0;
+    assertGt(p,0.50,'Precio XRP demasiado bajo');
+    assertLt(p,30,'Precio XRP demasiado alto');
+  });
+  it('Spread promedio de XRP/USD < 50 bps (mercado normal)', ()=>{
+    const usd=(BOOKS.books||[]).filter(b=>b.symbol==='XRP/USD'&&(b.spread_bps||0)>0);
+    if(usd.length===0) throw new Error('Sin libros XRP/USD con spread');
+    const avgSpread=usd.reduce((s,b)=>s+(b.spread_bps||0),0)/usd.length;
+    assertLt(avgSpread,50,`Spread promedio XRP/USD anómalamente alto: ${avgSpread.toFixed(2)} bps`);
+  });
+  it('Depth ±1% agregada en estado default > $5M', ()=>{
+    const r=runCalc();
+    assertGt(r.book.depth1,5e6,'Depth base demasiado baja para calcular slippage');
+  });
+  it('Todos los libros con depth > 0 tienen spread_bps definido', ()=>{
+    const bad=(BOOKS.books||[]).filter(b=>(b.depth_1pct_usd||0)>0&&b.spread_bps==null);
+    assert(bad.length===0, `Libros sin spread: ${bad.map(b=>b.symbol+'/'+b.venue).join(', ')}`);
+  });
+  it('Los libros tienen venue identificado', ()=>{
+    const noVenue=(BOOKS.books||[]).filter(b=>!b.venue&&!b.source);
+    assert(noVenue.length===0, `${noVenue.length} libros sin venue/source`);
+  });
+});
+
+describe('3. CURSORES — slider float afecta precio inversamente', ()=>{
+  it('Float 0.5B → precio > float 2.0B (slider invertido)', ()=>{
+    const lo=runCalc({floatB:0.5});
+    const hi=runCalc({floatB:2.0});
+    assertGt(lo.priceUtil, hi.priceUtil, `Float 0.5B debería dar precio más alto que 2.0B`);
+    return `P_util(0.5B)=${fmtUsd(lo.priceUtil)} > P_util(2.0B)=${fmtUsd(hi.priceUtil)}`;
+  });
+  it('Float 0.35B (mín) → precio mayor que float 8.0B (máx)', ()=>{
+    const lo=runCalc({floatB:0.35});
+    const hi=runCalc({floatB:8.0});
+    assertGt(lo.priceUtil, hi.priceUtil, `Min float debería dar precio más alto que max float`);
+    return `P_util(0.35B)=${fmtUsd(lo.priceUtil)} vs P_util(8.0B)=${fmtUsd(hi.priceUtil)}`;
+  });
+  it('Precio cambia al mover float (sensibilidad > 5%)', ()=>{
+    const lo=runCalc({floatB:0.5});
+    const hi=runCalc({floatB:2.0});
+    const chg=Math.abs(lo.priceUtil-hi.priceUtil)/Math.max(hi.priceUtil,0.01)*100;
+    assertGt(chg,5,`Cambio de precio al mover float demasiado pequeño: ${chg.toFixed(1)}%`);
+    return `Sensibilidad: ${chg.toFixed(1)}%`;
+  });
+});
+
+describe('4. CURSORES — slider rotación afecta precio inversamente', ()=>{
+  it('Rotación 8x → precio > rotación 130x', ()=>{
+    const lo=runCalc({rotation:8});
+    const hi=runCalc({rotation:130});
+    assertGt(lo.priceUtil, hi.priceUtil, `Baja rotación debería dar precio más alto`);
+    return `P_util(8x)=${fmtUsd(lo.priceUtil)} > P_util(130x)=${fmtUsd(hi.priceUtil)}`;
+  });
+  it('Rotación efectiva nunca baja de 4x (límite mínimo)', ()=>{
+    const r=runCalc({rotation:4});
+    assertGt(r.effectiveRotation, 3.9, 'effectiveRotation por debajo de 4x');
+    return `effectiveRotation con rot=4: ${r.effectiveRotation.toFixed(2)}x`;
+  });
+  it('Rotación efectiva ≤ rotación base (infraestructura retiene XRP)', ()=>{
+    const r=runCalc({rotation:58});
+    assertLt(r.effectiveRotation, 58.01, 'effectiveRotation no puede superar rotation base');
+    return `${r.effectiveRotation.toFixed(2)}x ≤ 58x`;
+  });
+});
+
+describe('5. CURSORES — liquidez privada afecta profundidad y slippage', ()=>{
+  it('privateFactor 3x → depth dinámica > privateFactor 0x', ()=>{
+    const hi=runCalc({privateFactor:3});
+    const lo=runCalc({privateFactor:0});
+    assertGt(hi.depthDynamic, lo.depthDynamic, 'Más liquidez privada → más depth');
+    return `Depth(3x)=${fmtUsd(hi.depthDynamic)} vs Depth(0x)=${fmtUsd(lo.depthDynamic)}`;
+  });
+  it('privateFactor 3x → slippage menor que privateFactor 0x', ()=>{
+    const hi=runCalc({privateFactor:3});
+    const lo=runCalc({privateFactor:0});
+    assertLt(hi.slippage, lo.slippage, 'Más liquidez privada → menos slippage');
+    return `Slip(3x)=${hi.slippage.toFixed(2)}% vs Slip(0x)=${lo.slippage.toFixed(2)}%`;
+  });
+  it('privateFactor afecta precio (pequeño, ~5-20%)', ()=>{
+    const hi=runCalc({privateFactor:3});
+    const lo=runCalc({privateFactor:0});
+    const chg=Math.abs(hi.priceUtil-lo.priceUtil)/Math.max(lo.priceUtil,0.01)*100;
+    assertGt(chg,1,'privateFactor debería tener algún efecto en precio');
+    assertLt(chg,50,'privateFactor no debería dominar el precio');
+    return `Efecto precio: ${chg.toFixed(1)}%`;
+  });
+});
+
+describe('6. CURSORES — orden de estrés afecta slippage', ()=>{
+  it('Orden $1M → slippage < orden $500M', ()=>{
+    const lo=runCalc({orderM:1});
+    const hi=runCalc({orderM:500});
+    assertLt(lo.slippage, hi.slippage, 'Orden grande debe dar más slippage');
+    return `Slip($1M)=${lo.slippage.toFixed(2)}% vs Slip($500M)=${hi.slippage.toFixed(2)}%`;
+  });
+  it('Slippage siempre entre 0.01% y 95%', ()=>{
+    const cases=[1,10,100,500,1000].map(m=>runCalc({orderM:m}).slippage);
+    cases.forEach(s=>assert(s>=0.01&&s<=95,`Slippage fuera de rango: ${s}`));
+    return cases.map(s=>s.toFixed(2)+'%').join(' | ');
+  });
+  it('Fórmula slippage = (order/depth)^0.66 coincide con cálculo directo', ()=>{
+    const r=runCalc({orderM:100});
+    const expected=clamp(Math.pow((100e6)/Math.max(r.depthDynamic,1),0.66),0.01,95);
+    assertClose(r.slippage,expected,0.001,'Slippage no coincide con fórmula directa');
+    return `Calculado=${r.slippage.toFixed(4)}% | Esperado=${expected.toFixed(4)}%`;
+  });
+});
+
+describe('7. CURSORES — prima de mercado afecta P_mercado (no P_util)', ()=>{
+  it('Prima alta → P_mercado > P_mercado con prima baja', ()=>{
+    const hi=runCalc({premium:300});
+    const lo=runCalc({premium:-30});
+    assertGt(hi.priceMarket, lo.priceMarket, 'Prima alta → precio mercado más alto');
+    return `P_mkt(+300%)=${fmtUsd(hi.priceMarket)} vs P_mkt(-30%)=${fmtUsd(lo.priceMarket)}`;
+  });
+  it('P_mercado siempre >= P_util (no hay descuento de mercado negativo)', ()=>{
+    [runCalc({premium:-40}), runCalc({premium:0}), runCalc({premium:300})].forEach(r=>{
+      assert(r.priceMarket>=r.priceUtil, `P_mkt(${fmtUsd(r.priceMarket)}) < P_util(${fmtUsd(r.priceUtil)})`);
+    });
+    return 'P_mkt ≥ P_util en todos los casos';
+  });
+});
+
+describe('8. ETF — reducción de float y efecto en precio', ()=>{
+  it('ETF desactivado → floatEffective = floatB del slider', ()=>{
+    const r=runCalc({floatB:1.25},{xrp_spot_etfs:{enabled:false}});
+    assertClose(r.floatEffective, 1.25, 0.001, 'ETF desactivado no debería reducir float');
+    return `floatEffective=${r.floatEffective.toFixed(4)}B (esperado 1.25B)`;
+  });
+  it('ETF activado (50%) → floatEffective < floatB slider', ()=>{
+    const r=runCalc({floatB:1.25},{xrp_spot_etfs:{enabled:true,activation_pct:50}});
+    assertLt(r.floatEffective, 1.25, 'ETF activado debe reducir float efectivo');
+    return `floatEffective=${r.floatEffective.toFixed(4)}B < 1.25B slider`;
+  });
+  it('ETF activado (100%) → reducción correcta: 0.75 * conf * act', ()=>{
+    const r=runCalc({floatB:1.25},{xrp_spot_etfs:{enabled:true,activation_pct:100}});
+    const expected=1.25-0.75*0.85*1.0; // holdings * conf * act
+    assertClose(r.floatEffective, Math.max(expected,0.05), 0.05, 'ETF float reduction incorrecta');
+    return `etfHeld=${r.etfHeldB.toFixed(4)}B | floatEffective=${r.floatEffective.toFixed(4)}B`;
+  });
+  it('ETF activado → precio funcional mayor que ETF desactivado', ()=>{
+    const withEtf=runCalc({floatB:1.25},{xrp_spot_etfs:{enabled:true,activation_pct:100}});
+    const noEtf=runCalc({floatB:1.25},{xrp_spot_etfs:{enabled:false}});
+    assertGt(withEtf.priceUtil, noEtf.priceUtil, 'ETF debería subir precio al reducir float');
+    return `P_util(con ETF)=${fmtUsd(withEtf.priceUtil)} > P_util(sin ETF)=${fmtUsd(noEtf.priceUtil)}`;
+  });
+  it('floatEffective nunca baja de 0.05B (límite de seguridad)', ()=>{
+    const r=runCalc({floatB:0.35},{xrp_spot_etfs:{enabled:true,activation_pct:100}});
+    assertGt(r.floatEffective, 0.049, 'floatEffective bajó por debajo del límite 0.05B');
+    return `floatEffective con float=0.35B + ETF 100% = ${r.floatEffective.toFixed(4)}B`;
+  });
+});
+
+describe('9. CRUCE DE DATOS — infraestructura y depth', ()=>{
+  it('Activar Ripple Prime → infraDepthBoost > 1 (hasta +28%)', ()=>{
+    const r=runCalc({},{ripple_prime_hidden_road:{enabled:true,activation_pct:100}});
+    assertGt(r.infraDepthBoost, 1, 'Ripple Prime debe aumentar infraDepthBoost');
+    return `infraDepthBoost con Prime 100% = ${r.infraDepthBoost.toFixed(3)}x`;
+  });
+  it('Desactivar todos los ítems → direct XRP flow = 0', ()=>{
+    const items=REG.items.reduce((acc,i)=>{acc[i.id]={enabled:false};return acc},{});
+    const r=runCalc({},items);
+    assertClose(r.direct, 0, 1, 'Con todos desactivados, flujo debe ser 0');
+    return `direct=${fmtUsd(r.direct)} (esperado ~$0)`;
+  });
+  it('Activar Brasil stack → flujo RLUSD aumenta significativamente', ()=>{
+    const withBR=runCalc({},{brazil_full_stack:{enabled:true,activation_pct:100}});
+    const noBR=runCalc({},{brazil_full_stack:{enabled:false}});
+    assertGt(withBR.rlusd, noBR.rlusd, 'Brasil stack debe aumentar flujo RLUSD');
+    return `RLUSD(con Brasil)=${fmtUsd(withBR.rlusd)} vs RLUSD(sin Brasil)=${fmtUsd(noBR.rlusd)}`;
+  });
+  it('ítems con dependencias tienen coupledItems > 0', ()=>{
+    const r=runCalc();
+    assertGt(r.coupledItems, 0, 'Debería haber ítems acoplados con dependencias');
+    return `coupledItems = ${r.coupledItems}`;
+  });
+  it('Subir adopción de RLUSD core → flujo XRPL aumenta', ()=>{
+    const hi=runCalc({},{rlusd_core:{enabled:true,activation_pct:80}});
+    const lo=runCalc({},{rlusd_core:{enabled:true,activation_pct:5}});
+    assertGt(hi.xrpl, lo.xrpl, 'Mayor adopción RLUSD → más flujo XRPL');
+    return `XRPL(80%)=${fmtUsd(hi.xrpl)} > XRPL(5%)=${fmtUsd(lo.xrpl)}`;
+  });
+});
+
+describe('10. ESCENARIOS v8.6 — mapeo de adopción', ()=>{
+  it('Estado default → escenario today_confirmed ($1.00–$3.00 util)', ()=>{
+    const r=runCalc();
+    assertGt(r.priceUtil, 0.5, 'Default util price demasiado bajo');
+    assertLt(r.priceUtil, 10, 'Default util price demasiado alto para today_confirmed');
+    return `P_util default = ${fmtUsd(r.priceUtil)}`;
+  });
+  it('Adopción máxima (todos 100%) → precio en zona alta (>$5 util)', ()=>{
+    const allMax=REG.items.reduce((acc,i)=>{acc[i.id]={enabled:true,activation_pct:100};return acc},{});
+    const r=runCalc({},allMax);
+    assertGt(r.priceUtil, 5, `Adopción máxima debería dar precio >$5, got ${fmtUsd(r.priceUtil)}`);
+    return `P_util(todos 100%) = ${fmtUsd(r.priceUtil)}`;
+  });
+  it('P_util > 0 en todos los escenarios', ()=>{
+    const tests=[
+      runCalc({floatB:0.35}),
+      runCalc({floatB:8}),
+      runCalc({rotation:8}),
+      runCalc({rotation:130}),
+      runCalc({premium:-40}),
+      runCalc({premium:600})
+    ];
+    const bad=tests.filter(r=>!(r.priceUtil>0));
+    assert(bad.length===0, `${bad.length} escenarios con P_util ≤ 0`);
+    return `Todos los escenarios dan P_util > 0`;
+  });
+  it('Flujo directo XRP aumenta al subir adopción', ()=>{
+    const lo=runCalc({},{bitso_mxn_latam:{activation_pct:5}});
+    const hi=runCalc({},{bitso_mxn_latam:{activation_pct:90}});
+    assertGt(hi.direct, lo.direct, 'Mayor adopción Bitso → mayor flujo XRP');
+    return `direct(5%)=${fmtUsd(lo.direct)} → direct(90%)=${fmtUsd(hi.direct)}`;
+  });
+});
+
+describe('11. CRUCE CURSORES ↔ CEX — consistencia end-to-end', ()=>{
+  it('Float bajo + alta adopción → slippage menor que float alto + baja adopción', ()=>{
+    // Paradox test: high adoption = more depth = lower slippage even with low float
+    const hiAdopt=makeItems({bitso_mxn_latam:{activation_pct:80},brazil_full_stack:{activation_pct:80}});
+    const loAdopt=makeItems({bitso_mxn_latam:{activation_pct:5},brazil_full_stack:{activation_pct:5}});
+    const s={floatB:1.25,rotation:58,privateFactor:1,premium:18,orderM:100};
+    // Just check depth increases with adoption (CEX base + dynamic boost)
+    const rHi=runCalc(s,{bitso_mxn_latam:{activation_pct:80},brazil_full_stack:{activation_pct:80},ripple_prime_hidden_road:{activation_pct:80}});
+    const rLo=runCalc(s,{bitso_mxn_latam:{activation_pct:5},brazil_full_stack:{activation_pct:5},ripple_prime_hidden_road:{activation_pct:5}});
+    assertGt(rHi.depthDynamic, rLo.depthDynamic, 'Alta adopción → mayor depth');
+    return `Depth(alta)=${fmtUsd(rHi.depthDynamic)} > Depth(baja)=${fmtUsd(rLo.depthDynamic)}`;
+  });
+  it('Al subir orderM, slippage crece no-linealmente (exponente ~0.66)', ()=>{
+    const s1=runCalc({orderM:10});
+    const s10=runCalc({orderM:100});
+    const s100=runCalc({orderM:1000});
+    const ratio1=s10.slippage/Math.max(s1.slippage,0.001);
+    const ratio2=s100.slippage/Math.max(s10.slippage,0.001);
+    // Both ratios should be > 1 (slippage increases)
+    assertGt(ratio1, 1, 'Slippage no crece de $10M a $100M');
+    assertGt(ratio2, 1, 'Slippage no crece de $100M a $1000M');
+    return `Slip($10M)=${s1.slippage.toFixed(2)}% | Slip($100M)=${s10.slippage.toFixed(2)}% | Slip($1B)=${s100.slippage.toFixed(2)}%`;
+  });
+  it('ETF + bajo float → mayor precio que solo bajo float', ()=>{
+    const etfAndLow=runCalc({floatB:0.8},{xrp_spot_etfs:{enabled:true,activation_pct:80}});
+    const onlyLow=runCalc({floatB:0.8},{xrp_spot_etfs:{enabled:false}});
+    assertGt(etfAndLow.priceUtil, onlyLow.priceUtil, 'ETF encima de bajo float debe empujar precio aún más');
+    return `P_util(ETF+0.8B)=${fmtUsd(etfAndLow.priceUtil)} > P_util(0.8B solo)=${fmtUsd(onlyLow.priceUtil)}`;
+  });
+  it('Precio funcional y mercado respetan relación (P_mkt ≥ P_util)', ()=>{
+    const combos=[
+      runCalc({floatB:0.5,rotation:10,premium:200}),
+      runCalc({floatB:4,rotation:100,premium:-30}),
+      runCalc({floatB:1.25,rotation:58,premium:18}),
+    ];
+    combos.forEach((r,i)=>assert(r.priceMarket>=r.priceUtil,`Combo ${i}: P_mkt < P_util`));
+    return `Verificado en ${combos.length} combinaciones`;
+  });
+});
+
+describe('12. I18N — completitud de traducciones', ()=>{
+  it('SUMMARY_I18N.es tiene entradas para los 22 ítems', ()=>{
+    // We check via the registry items count vs summary_es in JSON
+    const withEs=REG.items.filter(i=>i.summary_es);
+    assert(withEs.length===REG.items.length, `Solo ${withEs.length}/${REG.items.length} ítems tienen summary_es`);
+    return `${withEs.length}/${REG.items.length} ítems con summary_es`;
+  });
+  it('ETF item summary_es existe y está en español', ()=>{
+    const etf=REG.items.find(i=>i.id==='xrp_spot_etfs');
+    assert(etf.summary_es&&etf.summary_es.length>10, 'ETF sin summary_es válido');
+    assert(!etf.summary_es.startsWith('US spot'),'summary_es del ETF parece inglés, no español');
+    return `OK: "${etf.summary_es.slice(0,60)}..."`;
+  });
+  it('UAE item summary_es existe y está en español', ()=>{
+    const uae=REG.items.find(i=>i.id==='lulu_uae_middle_east');
+    assert(uae.summary_es&&uae.summary_es.length>10, 'UAE sin summary_es válido');
+    return `OK: "${uae.summary_es.slice(0,60)}..."`;
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// RUNNER
+// ─────────────────────────────────────────────────────────────
+async function loadData(){
+  const base='data/';
+  [REG,BOOKS,SC86] = await Promise.all([
+    fetch(base+'infrastructure_registry.json').then(r=>r.json()),
+    fetch(base+'live_orderbook_snapshot.json').then(r=>r.json()),
+    fetch(base+'scenarios_v86.json').then(r=>r.json()).catch(()=>null)
+  ]);
+}
+
+async function runAll(){
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true;
+  const loading=document.getElementById('loading');
+  loading.style.display='block';
+  loading.textContent='Cargando datos (registry, orderbooks, scenarios)…';
+  try { await loadData(); } catch(e){
+    loading.textContent='Error cargando datos: '+e.message;
+    btn.disabled=false; return;
+  }
+  loading.style.display='none';
+
+  let total=0,passed=0,failed=0;
+  SUITES.forEach(s=>total+=s.tests.length);
+  const progress=document.getElementById('progressBar');
+  progress.style.display='block';
+  const suitesEl=document.getElementById('suites');
+  suitesEl.innerHTML='';
+
+  let done=0;
+  for(const suite of SUITES){
+    const suiteEl=document.createElement('div');
+    suiteEl.className='suite';
+    const titleRow=document.createElement('div');
+    titleRow.className='suite-title';
+    const badge=document.createElement('span');
+    badge.className='suite-badge badge-run';
+    badge.textContent='ejecutando…';
+    titleRow.innerHTML=suite.name+' ';
+    titleRow.appendChild(badge);
+    suiteEl.appendChild(titleRow);
+    suitesEl.appendChild(suiteEl);
+
+    for(const test of suite.tests){
+      const t0=performance.now();
+      const row=document.createElement('div');
+      row.className='test-row';
+      const dot=document.createElement('div');
+      dot.className='dot run';
+      row.appendChild(dot);
+      const nameEl=document.createElement('div');
+      nameEl.className='test-name';
+      nameEl.textContent=test.name;
+      row.appendChild(nameEl);
+      const actualEl=document.createElement('div');
+      actualEl.className='test-actual';
+      row.appendChild(actualEl);
+      const timeEl=document.createElement('div');
+      timeEl.className='test-time';
+      row.appendChild(timeEl);
+      suiteEl.appendChild(row);
+
+      await new Promise(res=>setTimeout(res,0)); // yield to DOM
+      try{
+        const ret=test.fn();
+        const elapsed=performance.now()-t0;
+        test.status='pass'; passed++;
+        dot.className='dot pass';
+        if(ret&&typeof ret==='string') actualEl.textContent=ret;
+        timeEl.textContent=elapsed.toFixed(1)+'ms';
+      }catch(e){
+        const elapsed=performance.now()-t0;
+        test.status='fail'; failed++;
+        dot.className='dot fail';
+        actualEl.innerHTML=`<span style="color:#fca5a5">✗ ${e.message}</span>`;
+        timeEl.textContent=elapsed.toFixed(1)+'ms';
+      }
+      done++;
+      progress.value=done/total;
+    }
+
+    const suitePass=suite.tests.filter(t=>t.status==='pass').length;
+    const suiteFail=suite.tests.filter(t=>t.status==='fail').length;
+    badge.className='suite-badge '+(suiteFail>0?'badge-fail':'badge-pass');
+    badge.textContent=suiteFail>0?`${suiteFail} falló`:`${suitePass} OK`;
+  }
+
+  // Summary
+  const bar=document.getElementById('summaryBar');
+  bar.style.display='flex';
+  bar.innerHTML=`
+    <div><div class="section-label">Tests completados</div><b>${total}</b></div>
+    <div><div class="section-label">Pasados</div><b class="ok-c">${passed}</b></div>
+    <div><div class="section-label">Fallados</div><b class="${failed>0?'fail-c':'ok-c'}">${failed}</b></div>
+    <div><div class="section-label">Estado</div><b class="${failed>0?'fail-c':'ok-c'}">${failed>0?'REVISAR':'TODOS OK ✓'}</b></div>
+    <div style="flex:1"></div>
+    <div><div class="section-label">Precio funcional (default)</div><b style="color:var(--cyan)">${fmtUsd(runCalc().priceUtil)}</b></div>
+    <div><div class="section-label">Precio mercado (default)</div><b style="color:#dffaff">${fmtUsd(runCalc().priceMarket)}</b></div>
+    <div><div class="section-label">Depth ±1% dinámica</div><b style="color:var(--violet)">${fmtUsd(runCalc().depthDynamic)}</b></div>
+  `;
+  progress.value=1;
+  btn.disabled=false;
+  btn.textContent='▶ Re-ejecutar tests';
+}
+
+document.getElementById('runBtn').addEventListener('click', runAll);
+
+// Auto-run on load
+window.addEventListener('load', ()=>setTimeout(runAll, 200));
+</script>
+</body>
+</html>

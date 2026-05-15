@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XRP Simulator — Final Live Edition</title>
+  <meta name="description" content="XRP Simulator: simulador vivo de liquidez, XRP, XRPL, RLUSD, ETF/ETP y orderbooks." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="cosmos"></div>
+  <div class="cinema-grain" aria-hidden="true"></div>
+  <div class="audio-player" id="audioPlayer">
+    <div class="audio-meta">
+      <span class="audio-dot"></span>
+      <div><b id="trackTitle">Cargando…</b><small id="trackCounter">1 / 29</small></div>
+    </div>
+    <div class="audio-controls">
+      <button class="icon-btn" id="prevTrack" title="Anterior">◀</button>
+      <button class="icon-btn primary-audio" id="toggleAudio" title="Pausar/Reproducir">Pausar</button>
+      <button class="icon-btn" id="nextTrack" title="Siguiente">▶</button>
+    </div>
+  </div>
+
+  <div class="intro-modal" id="introModal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <div class="intro-card">
+      <div class="modal-glow"></div>
+      <div class="intro-lang-switch" aria-label="Selector de idioma inicial">
+        <span id="introLangLabel">Idioma</span>
+        <button class="lang-btn intro-lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn intro-lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn intro-lang-btn" data-lang="ja">日本語</button>
+        <button class="lang-btn intro-lang-btn" data-lang="ko">한국어</button>
+      </div>
+      <div class="section-label" id="introBeforeEnter">Antes de continuar · simulación educativa</div>
+      <h2 id="introTitle">No intenta adivinar el futuro: muestra qué condiciones tendrían que alinearse para que XRP cambiara de escala.</h2>
+      <p id="introDisclaimerText">Este simulador combina infraestructura Ripple/XRPL, mercados públicos, profundidad de orderbooks, ETF/ETP, RLUSD, RWA y modelos de liquidez para construir escenarios condicionales. <strong>No es asesoramiento financiero, no predice precios y no garantiza rentabilidad.</strong> Cada cifra es una salida del modelo según los parámetros elegidos, no una promesa ni una recomendación de inversión.</p>
+      <div class="simple-grid">
+        <div><b>1 · Infraestructura</b><span>Payments, RLUSD, Prime/Hidden Road, Treasury, Custody, Rail, Brasil, México, APAC, Corea, EAU, RWA, ETF/ETP y pilotos.</span></div>
+        <div><b>2 · Liquidez viva</b><span>Orderbooks CEX, XRPL DEX, agregados live y proxies institucionales/ETF separados para no mezclar señal pública con OTC.</span></div>
+        <div><b>3 · Resultado</b><span>Calcula flujo XRP, RLUSD/XRPL, float efectivo, reducción por ETF, rotación, profundidad, slippage y precio funcional.</span></div>
+      </div>
+      <label class="accept-label" id="acceptLabel">
+        <input type="checkbox" id="acceptCheck">
+        <span id="acceptText">Entiendo que este simulador es educativo y no constituye asesoramiento financiero ni predicción de precios.</span>
+      </label>
+      <p class="fine" id="introFineText">La música intentará sonar desde el inicio. Algunos navegadores bloquean el audio automático: si ocurre, pulsa "Entrar con música". Los botones se activan al marcar la casilla de arriba.</p>
+      <div class="button-row">
+        <button class="btn primary" id="enterWithMusic" disabled>Acepto — Entrar con música</button>
+        <button class="btn ghost" id="enterSilent" disabled>Acepto — Entrar sin música</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-modal hidden" id="explainModal" aria-hidden="true">
+    <div class="explain-backdrop" id="explainBackdrop"></div>
+    <div class="explain-card">
+      <div class="section-label">Explicación sencilla</div>
+      <h3 id="explainTitle">¿Qué significa esto?</h3>
+      <p id="explainText">Aquí verás una explicación en lenguaje muy simple.</p>
+      <div class="button-row"><button class="btn primary small" id="closeExplain">Entendido</button></div>
+    </div>
+  </div>
+
+  <div class="crawl-overlay hidden" id="crawlOverlay" aria-hidden="true">
+    <div class="crawl-backdrop"></div>
+    <div class="crawl-shell">
+      <div class="crawl-topbar">
+        <div>
+          <div class="section-label">Paso 1 · Presentación</div>
+          <h3>Introducción del proyecto</h3>
+        </div>
+        <div class="button-row compact">
+          <button class="btn ghost small" id="skipToCalculator">Ir al cálculo</button>
+          <button class="btn primary small" id="closeCrawl">Cerrar</button>
+        </div>
+      </div>
+      <div class="crawl-stage">
+        <div class="crawl-starfield" aria-hidden="true"></div>
+        <div class="crawl-fade-top" aria-hidden="true"></div>
+        <div class="crawl-fade-bottom" aria-hidden="true"></div>
+        <div class="crawl-track" id="crawlTrack">
+          <div class="crawl-inner" id="crawlContent"></div>
+        </div>
+      </div>
+      <div class="crawl-footer">Esta parte te pone en contexto: qué simula la web, a qué infraestructura se conecta y qué piezas reales o en piloto se tienen en cuenta.</div>
+    </div>
+  </div>
+
+  <div class="cinematic-overlay hidden" id="cinematicOverlay" aria-hidden="true">
+    <div class="cinematic-backdrop"></div>
+    <div class="cinematic-shell">
+      <div class="cinematic-topline">
+        <div>
+          <span class="section-label">Modo película</span>
+          <b id="cinemaCounter">Escena 1/8</b>
+        </div>
+        <div class="cinematic-actions">
+          <button class="icon-btn" id="cinemaPrev">Anterior</button>
+          <button class="icon-btn primary-audio" id="cinemaPause">Pausar</button>
+          <button class="icon-btn" id="cinemaNext">Siguiente</button>
+          <button class="icon-btn" id="cinemaClose">Cerrar</button>
+        </div>
+      </div>
+      <div class="cinematic-progress"><span id="cinemaProgress"></span></div>
+      <div class="cinematic-content">
+        <div class="cinematic-copy">
+          <div class="cinema-chip" id="cinemaChip">Problema</div><div class="cinema-module-label" id="cinemaModuleLabel">Narrativa general</div>
+          <h2 id="cinemaTitle">El dinero global se mueve lento.</h2>
+          <p id="cinemaText">Pagos, tesorería, remesas y colateral todavía dependen de capas lentas, liquidez atrapada y reconciliaciones complejas.</p>
+          <div class="cinema-bullets" id="cinemaBullets"></div>
+        </div>
+        <div class="cinematic-visual" id="cinematicVisual" aria-hidden="true">
+          <div class="rail-line rail-a"></div>
+          <div class="rail-line rail-b"></div>
+          <div class="cinema-node n1">FIAT</div>
+          <div class="cinema-node n2">RLUSD</div>
+          <div class="cinema-node n3">XRPL</div>
+          <div class="cinema-node n4">XRP</div>
+          <div class="cinema-node n5">ORDERBOOKS</div>
+          <div class="flow-particle p1"></div>
+          <div class="flow-particle p2"></div>
+          <div class="flow-particle p3"></div>
+        </div>
+      </div>
+      <div class="cinematic-caption">No es una promesa de precio. Es una simulación de condiciones: infraestructura, adopción, liquidez y libros de órdenes.</div>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand"><span class="orb"></span><span>XRP Simulator <b>Final</b></span></div>
+    <div class="lang-switch" aria-label="Selector de idioma">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ja">日本語</button>
+      <button class="lang-btn" data-lang="ko">한국어</button>
+    </div>
+    <nav>
+      <a href="#presentacion">Presentación</a>
+      <a href="#infra">Infraestructura</a>
+      <a href="#simulador">Cálculo</a>
+      <a href="#cinematica">Escenario final</a>
+      <a href="#donar">Apoyar</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero panel cinematic" id="inicio">
+      <div class="kicker">No es una predicción. Es un mapa de condiciones.</div>
+      <h1>No calcules XRP como una acción. Simúlalo como infraestructura de liquidez.</h1>
+      <p class="lead">Este gemelo digital integra corredores reales, productos Ripple, RLUSD, XRPL, Prime, Custody, Treasury, pilotos, adquisiciones y orderbooks para estimar cómo cambiarían flujo, float, rotación, profundidad y slippage según adopción elegida.</p>
+      <div class="hero-actions">
+        <button class="btn primary" id="openPresentationHero">Ver presentación</button>
+        <a class="btn ghost" href="#simulador">Ir al cálculo</a>
+        <button class="btn ghost" id="openIntro">¿Qué hace esta web?</button>
+      </div>
+      <div class="metrics-strip" id="heroMetrics">
+        <div><span>Infraestructura</span><b id="mInfra">—</b></div>
+        <div><span>Corredores</span><b id="mCorridors">—</b></div>
+        <div><span>Orderbooks</span><b id="mBooks">—</b></div>
+        <div><span>Modo datos</span><b id="mMode">—</b></div>
+      </div>
+    </section>
+
+
+    <section class="panel cinematic-stage presentation-stage" id="presentacion">
+      <div class="section-label">Paso 1 · Presentación</div>
+      <div class="section-head">
+        <div>
+          <h2>Primero contexto. Luego cálculo. Y al final el escenario visual.</h2>
+          <p class="muted">Primero entiendes el proyecto en lenguaje sencillo, después ajustas la simulación y por último abres el escenario visual basado en los números que tú has construido.</p>
+        </div>
+        <div class="button-row compact">
+          <button class="btn primary small" id="openPresentation">Abrir presentación</button>
+          <a class="btn ghost small" href="#simulador">Saltar al cálculo</a>
+        </div>
+      </div>
+      <div class="presentation-steps">
+        <div class="presentation-step"><b>1 · Presentación</b><span>Qué es el proyecto, qué capa de Ripple/XRPL integra, qué empresas se contemplan y qué parte está confirmada o en piloto.</span></div>
+        <div class="presentation-step"><b>2 · Cálculo</b><span>Tocas adopción, float, rotación, liquidez y orderbooks. El resultado cambia en vivo.</span></div>
+        <div class="presentation-step"><b>3 · Escenario final</b><span>El escenario final usa tus datos: orderbooks, rangos temporales y resumen en lenguaje fácil.</span></div>
+      </div>
+      <div class="scene-viewer" id="sceneViewer">
+        <div class="scene-number" id="sceneNumber">Escena 1/6</div>
+        <h3 id="sceneTitle">El dinero global aún se mueve como si internet no existiera.</h3>
+        <p id="sceneText">Pagos internacionales, tesorería corporativa, remesas y colateral siguen dependiendo de capas lentas, liquidez atrapada y reconciliaciones complejas.</p>
+        <div class="scene-orbit">
+          <span>FIAT</span><span>RLUSD</span><span>XRPL</span><span>XRP</span><span>ORDERBOOKS</span>
+        </div>
+      </div>
+      <div class="scene-dots" id="sceneDots"></div>
+    </section>
+
+    <section class="grid two" id="tesis">
+      <article class="panel">
+        <div class="section-label">La tesis</div>
+        <h2>El precio no sale de un deseo. Sale de flujo, float, rotación y liquidez real.</h2>
+        <p>Si XRP funciona solo como puente de alta rotación, el mismo token puede mover mucho volumen sin necesitar precios extremos. Si una parte de la infraestructura empieza a retener XRP como inventario, colateral o liquidez operativa, baja la rotación efectiva, baja el float vendedor y el equilibrio cambia de forma no lineal.</p>
+        <div class="formula">P_utilidad = volumen directo XRP / (float efectivo × rotación<sup>0.72</sup>)</div>
+        <p class="muted">La web separa impacto directo en XRP, impacto en RLUSD, impacto en XRPL e impacto indirecto sobre profundidad institucional.</p>
+      </article>
+      <article class="panel">
+        <div class="section-label">Lo que hace diferente esta versión</div>
+        <h2>La adopción no se inventa: se construye desde infraestructura real.</h2>
+        <ul class="checks">
+          <li>Bitso/MXN-LATAM, Brasil full stack, Tranglo/APAC, SBI JPY-THB, Unicâmbio EUR-BRL.</li>
+          <li>Ripple Payments, RLUSD, Ripple Prime/Hidden Road, Ripple Treasury/GTreasury, Rail, Custody.</li>
+          <li>Pilotos e infraestructura: DBS/Franklin sgBENJI, MAS BLOOM/Unloq, Corea, CBDC/stablecoin pilots.</li>
+          <li>Orderbooks live/datos base: el slippage y la profundidad se recalculan según libros y adopción.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel" id="infra">
+      <div class="section-label">Mapa de infraestructura</div>
+      <div class="section-head">
+        <div>
+          <h2>Infraestructura Ripple/XRPL integrada</h2>
+          <p class="muted">Activa, ajusta o añade mercados. Cada bloque tiene evidencia, región, corredores y ahora también dependencias con otras capas de Ripple: Prime, Custody, Treasury, RLUSD y stacks regionales.</p>
+        </div>
+        <div class="toolbar">
+          <select id="filterEvidence"><option value="all">Toda evidencia</option></select>
+          <input id="searchInfra" placeholder="Buscar corredor, partner, moneda…" />
+        </div>
+      </div>
+      <div id="infraGrid" class="infra-grid"></div>
+    </section>
+
+    <section class="grid two" id="simulador">
+      <article class="panel sticky-panel">
+        <div class="section-label">Paso 2 · Cálculo</div>
+        <h2>Parámetros globales</h2>
+        <div class="control"><label>Float vendedor disponible <b id="floatOut">1.25B XRP</b><button class="explain-btn" data-explain="float">Explicación</button></label><input class="reversed-range" id="floatInput" type="range" min="0.35" max="8" step="0.05" value="1.25"></div>
+        <div class="control"><label>Rotación base anual <b id="rotationOut">58x</b><button class="explain-btn" data-explain="rotation">Explicación</button></label><input id="rotationInput" type="range" min="8" max="130" step="1" value="58"></div>
+        <div class="control"><label>Factor de liquidez privada por adopción <b id="privateOut">1.00x</b><button class="explain-btn" data-explain="privateFactor">Explicación</button></label><input id="privateInput" type="range" min="0" max="3" step="0.05" value="1"></div>
+        <div class="control"><label>Prima de mercado/narrativa <b id="premiumOut">18%</b><button class="explain-btn" data-explain="premium">Explicación</button></label><input id="premiumInput" type="range" min="-40" max="600" step="1" value="18"></div>
+        <div class="control"><label>Orden de estrés para slippage <b id="orderOut">$100M</b><button class="explain-btn" data-explain="orderM">Explicación</button></label><input id="orderInput" type="range" min="1" max="1000" step="1" value="100"></div>
+        <div class="button-row"><button id="resetBtn" class="btn ghost small">Reset</button><button id="cinemaBtn" class="btn primary small">Abrir escenario final</button></div>
+        <p class="fine">Los valores se recalculan en tiempo real. En el slider de float, ahora la derecha significa menos XRP vendedor disponible y por eso suele subir el precio funcional.</p>
+      </article>
+
+      <article class="panel results-card">
+        <div class="section-label">Resultado vivo</div>
+        <div class="result-main">
+          <div><span>Precio funcional</span><b id="priceFunctional">—</b></div>
+          <div><span>Precio mercado simulado</span><b id="priceMarket">—</b></div>
+        </div>
+        <div class="result-grid">
+          <div><span>Volumen directo XRP/año</span><b id="directFlow">—</b></div>
+          <div><span>Volumen RLUSD influido/año</span><b id="rlusdFlow">—</b></div>
+          <div><span>Volumen XRPL influido/año</span><b id="xrplFlow">—</b></div>
+          <div><span>Depth ±1% dinámico</span><b id="depthDynamic">—</b></div>
+          <div><span>Slippage orden estrés</span><b id="slippageOut">—</b></div>
+          <div><span id="execPriceLabel">Precio ejecución (orden estrés)</span><b id="execPriceOut">—</b></div>
+          <div><span>Tier estimado</span><b id="tierOut">—</b></div>
+        </div>
+        <div class="chart-wrap"><canvas id="flowChart" width="900" height="280"></canvas></div>
+        <div class="explain" id="explainBox"></div>
+      </article>
+    </section>
+
+    <section class="panel" id="etfAccumulator">
+      <div id="etfPanel">
+        <div class="section-label" id="etfLabelEl">Acumulador ETF</div>
+        <div class="section-head">
+          <div>
+            <h2 id="etfTitleEl">ETFs Spot XRP / ETP Institucional</h2>
+            <p class="muted" id="etfTextEl">Los ETF spot de XRP aprobados en EE.UU. compran y retienen XRP directamente. Eso reduce el float vendedor efectivo y presiona el precio funcional al alza de forma no lineal.</p>
+            <div class="etf-method-card" id="etfMethodCard">
+              <b id="etfMethodTitle">De dónde salen estos datos</b>
+              <p id="etfMethodText">Precio y volumen diario vienen de la consulta live de mercado cuando está disponible. XRP retenido, AUM y reparto por producto son hipótesis del modelo según el escenario activo; no se tratan como orderbook spot.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Float bar gauge — auto-updating -->
+        <div class="float-bar-wrap">
+          <div class="float-bar-label">Distribución del supply XRP — ~100B total emitido</div>
+          <div class="float-bar">
+            <div class="float-bar-seg escrow" id="floatSegEscrow" style="width:45.2%">Escrow<br>45.2B</div>
+            <div class="float-bar-seg etf" id="floatSegEtf" style="width:0.5%"><span id="floatSegEtfLabel">ETF</span><br><span id="floatSegEtfVal">—</span></div>
+            <div class="float-bar-seg free" id="floatSegFree" style="width:54.3%">Libre<br><span id="floatSegFreeVal">~54.8B</span></div>
+          </div>
+          <div class="float-stats">
+            <span>Escrow Ripple<b>~45.2B XRP</b><small>Bloqueado en contrato Ripple. No circula.</small></span>
+            <span>ETF / ETP total<b id="etfTotalXrp">—</b><small>XRP bloqueado en custodia ETF (modelo).</small></span>
+            <span>Circulante estimado<b id="circulatingXrp">~54.8B XRP</b><small>Fuera del escrow — pero ~98% está retenido a largo plazo.</small></span>
+            <span>Float vendedor (slider)<b id="floatVendorXrp">—</b><small>Fracción activamente disponible para vender. ≪ circulante.</small></span>
+            <span>Float efectivo (−ETF)<b id="floatEffectiveXrp">—</b><small>Float vendedor menos lo que los ETF bloquean en custodia.</small></span>
+          </div>
+          <p class="float-explain-note fine" id="floatExplainNote">¿Por qué el circulante (~54.7B) es tan mayor que el float vendedor (1.25B)? La mayoría del XRP circulante está retenido a largo plazo: reservas de exchanges, wallets de ballenas, custodias institucionales. El slider modela solo la presión vendedora activa real. Cuanto más bajo, más mueve el precio cada dólar de flujo.</p>
+        </div>
+
+        <!-- ETF / ETP products table — rendered by JS -->
+        <div class="etf-products-wrap" id="etfTableWrap"></div>
+
+        <!-- Mechanism explanation -->
+        <div class="etf-mechanism-card">
+          <b id="etfMechTitle">Cómo el ETF bloquea XRP del mercado — mecanismo real</b>
+          <div class="etf-mech-steps">
+            <div class="mech-step"><span class="mech-num">1</span><span id="etfMechStep1">El Participante Autorizado (PA) compra XRP en el mercado spot con dinero de inversores</span></div>
+            <div class="mech-arrow">→</div>
+            <div class="mech-step"><span class="mech-num">2</span><span id="etfMechStep2">Entrega ese XRP al custodio del ETF (p.ej. Coinbase Custody, BitGo)</span></div>
+            <div class="mech-arrow">→</div>
+            <div class="mech-step"><span class="mech-num">3</span><span id="etfMechStep3">El XRP queda bloqueado en custodia — no puede venderse libremente en spot</span></div>
+            <div class="mech-arrow">→</div>
+            <div class="mech-step"><span class="mech-num">4</span><span id="etfMechStep4">El PA recibe acciones ETF que cotizan en bolsa (NYSE / Nasdaq / Xetra)</span></div>
+          </div>
+          <p class="fine" id="etfMechNote">El volumen de la tabla ("Vol/día live") es el trading de acciones ETF en bolsa — no es flujo spot de XRP. El XRP bloqueado en custodia no puede salir a vender: reduce el float vendedor efectivo. Resultado: el mismo flujo de pagos empuja el precio más arriba de forma no lineal.</p>
+        </div>
+
+        <!-- Summary metrics -->
+        <div class="etf-metrics">
+          <div><span id="etfHoldingsLabel">XRP en ETFs estimado</span><b id="etfHoldings">—</b></div>
+          <div><span id="etfFloatRedLabel">Reducción de float</span><b id="etfFloatReduction">—</b></div>
+          <div><span id="etfAumLabel">AUM estimado ETF</span><b id="etfAum">—</b></div>
+          <div><span id="etfProductsLabel">Productos incluidos</span><b id="etfProductCount">10</b></div>
+        </div>
+        <p class="fine" id="etfPanelNote">Activa el ETF de XRP en el mapa de infraestructura para ver el efecto de reducción de float en el precio funcional.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="orderbooks">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Orderbooks</div>
+          <h2>Libros usados para profundidad y slippage</h2>
+          <p class="muted">La adopción aumenta profundidad modelada, pero la base viene de libros live o de datos base locales si aún no has actualizado. No se fija un precio objetivo manual.</p>
+        </div>
+        <button class="btn ghost small" id="copyScenario">Copiar mi escenario</button>
+      </div>
+      <p class="fine" id="booksNote">Cargando estado de los libros…</p>
+      <div class="depth-cursor-card" id="depthCursorCard">
+        <div class="depth-cursor-copy">
+          <b id="depthCursorLabel">Cursor de profundidad</b>
+          <span id="depthCursorHelp">Elige qué banda del libro usar para profundidad y slippage.</span>
+        </div>
+        <div class="depth-cursor-control">
+          <input id="depthCursor" type="range" min="0" max="5" step="1" value="3">
+          <b id="depthCursorOut">±1%</b>
+        </div>
+      </div>
+      <div class="table-wrap"><table id="booksTable"></table></div>
+    </section>
+
+    <section class="grid two" id="simpleSummary">
+      <article class="panel">
+        <div class="section-label">Proyección narrativa</div>
+        <h2>Escenario 2026 → 2035 explicado fácil</h2>
+        <div class="simple-cards" id="simpleCards">
+          <div class="simple-card"><span>2026</span><b>—</b><small>Escenario base visual</small></div>
+          <div class="simple-card"><span>2029</span><b>—</b><small>Evolución intermedia</small></div>
+          <div class="simple-card"><span>2035</span><b>—</b><small>Escenario largo plazo</small></div>
+        </div>
+        <p class="muted" id="simpleNarrative">Aquí aparecerá una lectura sencilla cuando el motor termine de calcular.</p>
+      </article>
+      <article class="panel">
+        <div class="section-label">Precio en el tiempo</div>
+        <h2>Camino 2026 → 2035</h2>
+        <div class="timeline-simple" id="timelineSimple"></div>
+        <p class="fine">No es una predicción exacta. Es una visualización simple de cómo evolucionaría el equilibrio si se mantiene el escenario que has construido.</p>
+      </article>
+    </section>
+
+    <section class="panel cinematic-final" id="cinematica">
+      <div class="section-label">Paso 3 · Escenario final</div>
+      <div class="section-head">
+        <div>
+          <h2>Convierte tu simulación en una narrativa visual.</h2>
+          <p class="muted">Esta parte usa los números, la adopción y los orderbooks que acabas de calcular. Elige el módulo y abre el escenario final.</p>
+        </div>
+        <div class="button-row compact">
+          <a class="btn ghost small" href="#simulador">Volver al cálculo</a>
+          <button class="btn primary small" id="playCinematic">Abrir escenario</button>
+        </div>
+      </div>
+      <div class="cinema-module-grid">
+        <button class="cinema-module-btn active" data-module="narrative">Infraestructura</button>
+        <button class="cinema-module-btn" data-module="orderbooks">Orderbooks</button>
+        <button class="cinema-module-btn" data-module="timeline">Precio 2026 → 2035</button>
+        <button class="cinema-module-btn" data-module="summary">Resumen sencillo</button>
+      </div>
+      <p class="fine">Consejo: primero ajusta el escenario. Después abre esta parte para compartir una lectura más limpia y coherente.</p>
+    </section>
+
+    <section class="panel" id="custom">
+      <div class="section-label">Añadir lo que falte</div>
+      <h2>Mercado/corredor personalizado</h2>
+      <p class="muted">Añade un corredor que no esté en la base. El simulador lo integra al instante con etiqueta "usuario".</p>
+      <div class="custom-form">
+        <input id="customName" placeholder="Nombre: Ej. UAE / AED settlement" class="custom-name-input" />
+        <div class="custom-vol-row">
+          <span class="custom-vol-label">Volumen base anual USD</span>
+          <div class="vol-input-group">
+            <input id="customVolumeNum" type="number" min="0.001" step="any" placeholder="Ej. 2.5" />
+            <select id="customVolumeUnit">
+              <option value="1000000">× M &nbsp;(millones)</option>
+              <option value="1000000000" selected>× B &nbsp;(miles de mill.)</option>
+              <option value="1000000000000">× T &nbsp;(billones / trillion)</option>
+            </select>
+            <span id="customVolPreview" class="vol-preview">—</span>
+          </div>
+        </div>
+        <div class="custom-pct-row">
+          <input id="customXrp" type="number" placeholder="% toca XRP" />
+          <input id="customRlusd" type="number" placeholder="% toca RLUSD" />
+          <input id="customXrpl" type="number" placeholder="% toca XRPL" />
+          <button id="addCustom" class="btn primary">Añadir al modelo</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel donate" id="donar">
+      <div>
+        <div class="section-label">Apoyar el proyecto</div>
+        <h2>XRP Simulator es gratuito. Apoyo voluntario.</h2>
+        <p>Si esta herramienta te aporta valor, puedes apoyar su mantenimiento. La donación ayuda a sostener datos live, APIs y desarrollo. No es pago por asesoramiento ni promesa de rentabilidad.</p>
+      </div>
+      <details class="donation-details"><summary class="btn ghost small">Ver direcciones de donación</summary><div class="wallet-grid wallet-grid-expanded">
+        <div class="wallet"><b>XRP nativo · XRPL</b><code>r34fDWoDZWaRbUNtWQz4fwpvXf7UJZ6Z5H</code><small>Enviar solo XRP nativo en XRP Ledger.</small><button class="copy-wallet" data-copy="r34fDWoDZWaRbUNtWQz4fwpvXf7UJZ6Z5H">Copiar</button></div>
+        <div class="wallet"><b>RLUSD · XRPL</b><code>r34fDWoDZWaRbUNtWQz4fwpvXf7UJZ6Z5H</code><small>Comprueba issuer/trustline antes de enviar.</small><button class="copy-wallet" data-copy="r34fDWoDZWaRbUNtWQz4fwpvXf7UJZ6Z5H">Copiar</button></div>
+        <div class="wallet"><b>USDC · XRPL</b><code>r34fDWoDZWaRbUNtWQz4fwpvXf7UJZ6Z5H</code><small>Comprueba issuer/trustline antes de enviar.</small><button class="copy-wallet" data-copy="r34fDWoDZWaRbUNtWQz4fwpvXf7UJZ6Z5H">Copiar</button></div>
+        <div class="wallet"><b>EURC · Stellar</b><code>GARDMPLSUNUQBBMZUWNTSVCYIK7ZUICUGEENRZ4A2X6EQ4IHAGF2J7IA</code><small>Red Stellar. Revisa el asset/issuer.</small><button class="copy-wallet" data-copy="GARDMPLSUNUQBBMZUWNTSVCYIK7ZUICUGEENRZ4A2X6EQ4IHAGF2J7IA">Copiar</button></div>
+        <div class="wallet"><b>USDC · Stellar</b><code>GARDMPLSUNUQBBMZUWNTSVCYIK7ZUICUGEENRZ4A2X6EQ4IHAGF2J7IA</code><small>Red Stellar. Revisa el asset/issuer.</small><button class="copy-wallet" data-copy="GARDMPLSUNUQBBMZUWNTSVCYIK7ZUICUGEENRZ4A2X6EQ4IHAGF2J7IA">Copiar</button></div>
+        <div class="wallet"><b>EURC · Ethereum</b><code>0x0C8077866A26AF0e1F398c207F1081b92BeC98d0</code><small>Red Ethereum/ERC-20.</small><button class="copy-wallet" data-copy="0x0C8077866A26AF0e1F398c207F1081b92BeC98d0">Copiar</button></div>
+        <div class="wallet"><b>USDC · Ethereum</b><code>0x0C8077866A26AF0e1F398c207F1081b92BeC98d0</code><small>Red Ethereum/ERC-20.</small><button class="copy-wallet" data-copy="0x0C8077866A26AF0e1F398c207F1081b92BeC98d0">Copiar</button></div>
+        <div class="wallet"><b>USDT · Ethereum</b><code>0x0C8077866A26AF0e1F398c207F1081b92BeC98d0</code><small>Red Ethereum/ERC-20. No enviar por otras redes.</small><button class="copy-wallet" data-copy="0x0C8077866A26AF0e1F398c207F1081b92BeC98d0">Copiar</button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>XRP Simulator · Liquidez, XRPL, RLUSD, ETF/ETP y orderbooks. Español, inglés, japonés y coreano. No asesoramiento financiero.</p>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
