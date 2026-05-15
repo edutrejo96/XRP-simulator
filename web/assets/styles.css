@@ -366,3 +366,97 @@ button,.btn,input,select,summary{-webkit-tap-highlight-color:rgba(85,230,255,.18
   .audio-meta b{max-width:108px}
   .cinematic-actions{grid-template-columns:1fr}
 }
+
+/* v10.11 — Mobile scroll fix for intro/disclaimer modal
+   Fixes iOS/Android issue where the first modal card felt fixed and blocked vertical scroll. */
+.intro-modal{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+}
+.intro-card{
+  max-height:calc(100dvh - 36px) !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+}
+
+@supports not (height:100dvh){
+  .intro-card{max-height:calc(100vh - 36px) !important;}
+}
+
+@media(max-width:720px){
+  html,body{
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  .intro-modal{
+    display:block !important;
+    place-items:unset !important;
+    padding:10px !important;
+    background:radial-gradient(circle at 30% 10%,rgba(85,230,255,.18),transparent 30%),rgba(0,0,0,.82) !important;
+  }
+  .intro-modal.hidden{display:none !important;}
+  .intro-card{
+    width:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    min-height:auto !important;
+    margin:8px auto 28px !important;
+    padding:18px 16px 20px !important;
+    border-radius:22px !important;
+    overflow:visible !important;
+  }
+  .intro-card h2{
+    font-size:22px !important;
+    line-height:1.12 !important;
+    margin:12px 0 14px !important;
+  }
+  #introDisclaimerText,
+  .intro-card p{
+    font-size:14px !important;
+    line-height:1.48 !important;
+  }
+  .simple-grid{
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+    margin:16px 0 !important;
+  }
+  .simple-grid div{
+    padding:12px !important;
+    border-radius:16px !important;
+  }
+  .intro-lang-switch{
+    position:sticky;
+    top:0;
+    z-index:5;
+    padding:6px 0 10px;
+    background:linear-gradient(180deg,rgba(6,10,24,.96),rgba(6,10,24,.78));
+    backdrop-filter:blur(10px);
+  }
+  .intro-actions,
+  .intro-card .button-row,
+  #introModal .button-row{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+  }
+  #introModal .btn{
+    width:100% !important;
+    min-height:48px !important;
+  }
+  #acceptCheck{
+    min-width:20px;
+    min-height:20px;
+  }
+  .audio-player{
+    left:10px !important;
+    right:10px !important;
+    bottom:10px !important;
+    width:auto !important;
+    max-width:calc(100vw - 20px) !important;
+  }
+  main{padding-bottom:96px !important;}
+}
