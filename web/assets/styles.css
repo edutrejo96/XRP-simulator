@@ -499,3 +499,19 @@ button,.btn,input,select,summary{-webkit-tap-highlight-color:rgba(85,230,255,.18
     height: auto !important;
   }
 }
+
+/* v10.13 — mobile cleanup: remove duplicated hero CTA block.
+   On phones the hero buttons duplicated the Presentation/Cálculo flow below
+   and could make the first screen feel trapped. Desktop keeps them. */
+@media (max-width: 760px){
+  #inicio .hero-actions{
+    display:none !important;
+  }
+  #inicio.hero{
+    padding-bottom:14px !important;
+    margin-bottom:14px !important;
+  }
+  #inicio .metrics-strip{
+    margin-top:22px !important;
+  }
+}
