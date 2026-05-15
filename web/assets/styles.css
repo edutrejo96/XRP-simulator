@@ -222,3 +222,147 @@ html[lang="ja"] body, html[lang="ko"] body{font-family:Inter,ui-sans-serif,syste
 .donation-details{margin-top:12px}.donation-details>summary{width:max-content;list-style:none}.donation-details>summary::-webkit-details-marker{display:none}.donation-details[open]>summary{margin-bottom:14px}
 .formula{font-size:14px}.formula::before{content:"Modo avanzado · ";color:#55e6ff;font-size:11px;text-transform:uppercase;letter-spacing:.12em;margin-right:6px}
 .brand b{color:#55e6ff}.row-failed{display:none}
+
+/* ======================================================================
+   XRP Simulator — Mobile Final Patch
+   Makes the product usable from X/Twitter mobile traffic.
+   ====================================================================== */
+html{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{max-width:100%;touch-action:manipulation}
+button,.btn,input,select,summary{-webkit-tap-highlight-color:rgba(85,230,255,.18)}
+
+.mobile-scroll-hint{display:none}
+
+@media (max-width: 860px){
+  body{padding-bottom:86px}
+  .topbar{padding:10px 12px;gap:10px;align-items:center}
+  .brand{width:100%;justify-content:center;font-size:14px}
+  .brand .orb{width:15px;height:15px}
+  .brand b{display:none}
+  .lang-switch{order:2;width:100%;justify-content:center;gap:4px;padding:4px}
+  .lang-btn{padding:7px 8px;font-size:11px}
+  nav{order:3;width:100%;display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 2px;-webkit-overflow-scrolling:touch}
+  nav::-webkit-scrollbar{display:none}
+  nav a{flex:0 0 auto;scroll-snap-align:start;padding:8px 11px;border:1px solid rgba(85,230,255,.12);border-radius:999px;background:rgba(255,255,255,.035);font-size:12px;white-space:nowrap}
+  main{width:min(100% - 18px,1240px);padding:18px 0 72px}
+  .panel{border-radius:20px;padding:18px;overflow:hidden}
+  .hero{min-height:auto;margin-bottom:14px;padding-top:24px;padding-bottom:24px}
+  .hero h1{font-size:clamp(34px,12vw,52px);line-height:1.02;letter-spacing:-.045em;margin:12px 0}
+  .lead{font-size:16px;line-height:1.55}
+  .hero-actions,.button-row{gap:10px;margin:18px 0}
+  .btn{width:100%;padding:13px 16px;min-height:46px;text-align:center}
+  .btn.small{width:auto;min-height:38px}
+  .metrics-strip{grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}
+  .metrics-strip div,.result-grid div,.result-main div{border-radius:16px;padding:13px}
+  .metrics-strip b{font-size:20px}
+  .grid.two,.grid{grid-template-columns:1fr!important;gap:14px}
+  .sticky-panel{position:relative;top:auto}
+  .section-head{gap:10px;margin-bottom:14px}
+  h2{font-size:clamp(24px,8vw,34px)}
+  p{font-size:14px;line-height:1.58}
+  .toolbar{width:100%;display:grid;grid-template-columns:1fr;gap:8px}
+  .toolbar input,.toolbar .btn{width:100%;min-width:0}
+  .infra-grid{grid-template-columns:1fr!important;gap:12px}
+  .infra-card{padding:15px;border-radius:18px;gap:10px}
+  .card-top{display:grid;grid-template-columns:1fr;gap:8px}
+  .badge{max-width:100%;justify-self:start;font-size:10px}
+  .infra-card h3{font-size:17px;line-height:1.25}
+  .partners{font-size:12px;line-height:1.45}
+  .compact-summary{-webkit-line-clamp:4;font-size:12px}
+  .mini-bars{gap:6px}
+  .mini-bars div{padding:7px;font-size:11px;min-height:50px}
+  .card-controls label{align-items:center;gap:8px;flex-wrap:wrap}
+  .explain-btn.inline{margin-left:0}
+  .result-main{grid-template-columns:1fr;gap:10px}
+  .result-main b{font-size:clamp(32px,11vw,44px)}
+  .result-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .result-grid span{font-size:10px;min-height:auto}
+  .result-grid b{font-size:clamp(17px,6vw,24px)!important;word-break:normal;overflow-wrap:anywhere}
+  #tierOut{font-size:13px!important}
+  .formula{font-size:12px;line-height:1.55;overflow-wrap:anywhere}
+  .chart-wrap{padding:8px;border-radius:16px;overflow:hidden}
+  .chart-wrap canvas{max-width:100%;height:auto!important}
+  .custom-form{display:flex!important;flex-direction:column;gap:10px}
+  .custom-pct-row{grid-template-columns:1fr!important;gap:8px}
+  .vol-input-group{display:grid;grid-template-columns:1fr;gap:8px}
+  .vol-input-group input,.vol-input-group select{width:100%;min-width:0;flex:auto}
+  .depth-cursor-card{border-radius:18px;padding:14px;gap:12px}
+  .depth-cursor-copy{min-width:0}
+  .depth-cursor-control{grid-template-columns:1fr 68px;width:100%}
+  .float-stats{grid-template-columns:1fr!important}
+  .etf-mech-steps{display:grid;grid-template-columns:1fr;gap:8px}
+  .mech-step{min-width:0!important}
+  .donate{grid-template-columns:1fr;gap:14px}
+  .wallet-grid-expanded,.wallet-grid{grid-template-columns:1fr!important}
+  .wallet code{font-size:11px;word-break:break-all;white-space:normal}
+  .audio-player{left:10px;right:10px;bottom:10px;padding:9px 10px;border-radius:18px;gap:8px}
+  .audio-meta{min-width:0;flex:1;overflow:hidden}
+  .audio-meta b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+  .audio-meta small{font-size:10px}
+  .audio-controls{gap:5px;flex-shrink:0}
+  .icon-btn{padding:8px 9px;font-size:12px}
+  .audio-dot{width:10px;height:10px}
+  .intro-modal{align-items:start;place-items:start center;overflow-y:auto;padding:12px}
+  .intro-card{width:100%;max-height:none;border-radius:22px;padding:18px;margin:8px 0 90px}
+  .intro-card h2{font-size:clamp(22px,8vw,32px);line-height:1.12}
+  .intro-lang-switch{justify-content:center}
+  .simple-grid{grid-template-columns:1fr;gap:9px;margin:16px 0}
+  .simple-grid div{padding:12px;border-radius:16px}
+  .accept-label{align-items:flex-start;gap:10px;font-size:13px;line-height:1.45}
+  .cinematic-shell{height:calc(100vh - 22px);border-radius:22px}
+  .cinematic-topline{padding:14px;align-items:flex-start;flex-direction:column}
+  .cinematic-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .cinematic-content{grid-template-columns:1fr!important;padding:18px;gap:16px;overflow:auto}
+  .cinematic-copy h2{font-size:clamp(30px,11vw,48px)}
+  .cinematic-copy p{font-size:16px}
+  .cinematic-visual{min-height:220px}
+  .cinematic-caption{font-size:11px;padding:10px 14px}
+  .crawl-shell{height:calc(100vh - 22px);border-radius:20px}
+  .crawl-topbar{padding:14px;flex-direction:column;align-items:flex-start}
+  .crawl-stage{min-height:0}
+}
+
+/* Tables become readable cards on phones instead of forcing a desktop grid. */
+@media (max-width: 680px){
+  .table-wrap{overflow:visible;margin-top:10px}
+  .table-wrap::before{content:'Desliza o lee cada fila como tarjeta móvil';display:block;color:#7fa0bb;font-size:11px;margin:0 0 8px 2px}
+  #booksTable,.etf-products-table{min-width:0!important;width:100%;border-collapse:separate;border-spacing:0}
+  #booksTable thead,.etf-products-table thead{display:none}
+  #booksTable tbody,.etf-products-table tbody{display:block;width:100%}
+  #booksTable tr,.etf-products-table tr{display:grid;grid-template-columns:1fr;gap:0;margin:10px 0;border:1px solid rgba(85,230,255,.13);border-radius:16px;background:rgba(255,255,255,.035);overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.16)}
+  #booksTable td,.etf-products-table td{display:grid;grid-template-columns:112px minmax(0,1fr);gap:10px;align-items:start;padding:9px 11px;border-bottom:1px solid rgba(255,255,255,.055);font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+  #booksTable td:last-child,.etf-products-table td:last-child{border-bottom:0}
+  #booksTable td::before,.etf-products-table td::before{color:#55e6ff;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:850;line-height:1.35}
+  #booksTable td:nth-child(1)::before{content:'Par'}
+  #booksTable td:nth-child(2)::before{content:'Fuente'}
+  #booksTable td:nth-child(3)::before{content:'Vol/día'}
+  #booksTable td:nth-child(4)::before{content:'Depth sel.'}
+  #booksTable td:nth-child(5)::before{content:'Depth ±2%'}
+  #booksTable td:nth-child(6)::before{content:'Spread'}
+  #booksTable td:nth-child(7)::before{content:'Calidad'}
+  .etf-products-table td:nth-child(1)::before{content:'Producto'}
+  .etf-products-table td:nth-child(2)::before{content:'Ticker'}
+  .etf-products-table td:nth-child(3)::before{content:'Precio'}
+  .etf-products-table td:nth-child(4)::before{content:'Vol/día'}
+  .etf-products-table td:nth-child(5)::before{content:'XRP modelo'}
+  .etf-products-table td:nth-child(6)::before{content:'AUM modelo'}
+  .etf-products-table td:nth-child(7)::before{content:'Cesta'}
+  #booksTable .table-section-header,.etf-products-table .table-section-header{display:block;background:transparent;border:0;box-shadow:none;margin:16px 0 6px}
+  #booksTable .table-section-header td,.etf-products-table .table-section-header td{display:block;border:0;border-radius:14px;background:rgba(85,230,255,.075)!important;color:#bff6ff!important;padding:10px 12px;font-size:11px}
+  #booksTable .table-section-header td::before,.etf-products-table .table-section-header td::before{content:none}
+  #booksTable tr:has(td[colspan]),.etf-products-table tr:has(td[colspan]){display:block;border:0;background:transparent;box-shadow:none;margin:14px 0 6px}
+  #booksTable td[colspan],.etf-products-table td[colspan]{display:block!important;border:0!important;border-radius:14px;background:rgba(85,230,255,.06)!important;color:#a8bdd2!important;padding:10px 12px!important;font-size:11px!important}
+  #booksTable td[colspan]::before,.etf-products-table td[colspan]::before{content:none!important}
+}
+
+@media (max-width: 430px){
+  main{width:min(100% - 12px,1240px)}
+  .panel{padding:14px;border-radius:18px}
+  .hero h1{font-size:32px}
+  .metrics-strip,.result-grid{grid-template-columns:1fr}
+  #booksTable td,.etf-products-table td{grid-template-columns:92px minmax(0,1fr);font-size:11px;padding:8px 9px}
+  .lang-btn{font-size:10px;padding:6px 7px}
+  nav a{font-size:11px;padding:7px 9px}
+  .audio-meta b{max-width:108px}
+  .cinematic-actions{grid-template-columns:1fr}
+}
