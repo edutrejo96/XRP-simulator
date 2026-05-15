@@ -460,3 +460,42 @@ button,.btn,input,select,summary{-webkit-tap-highlight-color:rgba(85,230,255,.18
   }
   main{padding-bottom:96px !important;}
 }
+
+/* v10.12 — mobile hero buttons + intro actions fix */
+@media (max-width: 760px){
+  #inicio.hero{
+    min-height: auto;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+  #inicio .hero-actions,
+  #presentacion .button-row.compact{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+    margin: 18px 0 10px;
+  }
+  #inicio .hero-actions .btn,
+  #presentacion .button-row.compact .btn{
+    width: 100%;
+    min-height: 48px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.18;
+  }
+  #openIntro{
+    order: 3;
+  }
+  #presentacion .section-head{
+    display: block;
+  }
+  .crawl-overlay{
+    display: none !important;
+  }
+  body.cinema-lock{
+    overflow: auto !important;
+    position: static !important;
+    height: auto !important;
+  }
+}

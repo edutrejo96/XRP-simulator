@@ -1317,9 +1317,27 @@ loadData().catch(err=>{console.error(err);document.body.innerHTML='<pre style="c
   updateAcceptState();
   $('enterWithMusic')?.addEventListener('click',async()=>{ if(!($('acceptCheck')?.checked??true)) return; closeModal(); await tryPlay(); });
   $('enterSilent')?.addEventListener('click',()=>{ if(!($('acceptCheck')?.checked??true)) return; closeModal(); pauseAudio(); });
-  $('openIntro')?.addEventListener('click',()=> modal?.classList.remove('hidden'));
+  function isSmallScreen(){
+    return window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+  }
+
+  function goToSection(id){
+    const el = document.getElementById(id);
+    if (!el) return;
+    modal?.classList.add('hidden');
+    closePresentation();
+    document.body.classList.remove('cinema-lock','presentation');
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  // En móvil estos botones ya no abren overlays pesados: saltan a secciones normales.
+  // Así no atrapan el scroll ni fuerzan al usuario a cerrar una pantalla flotante.
+  $('openIntro')?.addEventListener('click',()=> goToSection('presentacion'));
   $('openPresentation')?.addEventListener('click',()=> openPresentation());
   $('openPresentationHero')?.addEventListener('click',()=> openPresentation());
+  document.querySelectorAll('a[href="#simulador"]').forEach(a=>{
+    a.addEventListener('click',(ev)=>{ ev.preventDefault(); goToSection('simulador'); });
+  });
 
   function buildPresentationMarkup(){
     const confirmed = items.filter(i=>i.enabled && i.evidence==='confirmed').slice(0,8).map(i=>i.name);
@@ -1344,6 +1362,11 @@ loadData().catch(err=>{console.error(err);document.body.innerHTML='<pre style="c
   }
 
   function openPresentation(){
+    // En móvil se queda dentro de la página normal para evitar overlays fijos.
+    if (isSmallScreen()){
+      goToSection('presentacion');
+      return;
+    }
     const overlay = $('crawlOverlay');
     const content = $('crawlContent');
     const track = $('crawlTrack');
@@ -1365,7 +1388,7 @@ loadData().catch(err=>{console.error(err);document.body.innerHTML='<pre style="c
     document.body.classList.remove('cinema-lock','presentation');
   }
   $('closeCrawl')?.addEventListener('click',()=> closePresentation());
-  $('skipToCalculator')?.addEventListener('click',()=>{ closePresentation(); document.getElementById('simulador')?.scrollIntoView({behavior:'smooth', block:'start'}); });
+  $('skipToCalculator')?.addEventListener('click',()=> goToSection('simulador'));
 
   function renderScene(i){
     sceneIndex = (i + currentScenes.length) % currentScenes.length;
